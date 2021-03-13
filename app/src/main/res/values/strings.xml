@@ -1,0 +1,11 @@
+<resources>
+    <string name="action_login">Login</string>
+    <string name="action_register">Register</string>
+    <string name="app_name">GEARS</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_password_second">Enter your password second time</string>
+    <string name="prompt_password_first">Create your password</string>
+    <string name="prompt_login">Create your login</string>
+    <string name="action_start_game">Start game</string>
+    <string name="welcome">Your personal account</string>
+</resources>
