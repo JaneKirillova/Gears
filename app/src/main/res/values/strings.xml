@@ -8,4 +8,5 @@
     <string name="prompt_login">Create your login</string>
     <string name="action_start_game">Start game</string>
     <string name="welcome">Your personal account</string>
+    <string name="Id">Id</string>
 </resources>
