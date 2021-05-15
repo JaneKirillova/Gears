@@ -1,15 +1,19 @@
 package com.example.gears;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.android.volley.toolbox.StringRequest;
 
 
 public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "simplifiedcodingsharedpref";
     private static final String KEY_USERNAME = "keyusername";
-    private static final String KEY_ID = "keyid";
+    private static final String KEY_TOKEN = "keytoken";
     private static final String KEY_PASSWORD = "keypassword";
+    private static final String KEY_ID = "keyid";
+    private static final String KEY_POINTS = "keypoints";
+    private static final String KEY_CURRENT_GAME_ID = "keycurrentgameid";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -28,19 +32,35 @@ public class SharedPrefManager {
     public void userLogin(User user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_ID, user.getId());
+        editor.putString(KEY_TOKEN, user.getToken());
         editor.putString(KEY_USERNAME, user.getUsername());
         editor.putString(KEY_PASSWORD, user.getPassword());
+        editor.putLong(KEY_ID, user.getId());
+        editor.putInt(KEY_POINTS, user.getPoints());
+        editor.apply();
+    }
+
+    public void setUserPoint(int points) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_POINTS, points);
+    }
+
+    public void setCurrentGameId(long id) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(KEY_CURRENT_GAME_ID, id);
         editor.apply();
     }
 
     public User getUser() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return new User(
-                sharedPreferences.getInt(KEY_ID, -1),
+                sharedPreferences.getString(KEY_TOKEN, null),
                 sharedPreferences.getString(KEY_USERNAME, null),
-                sharedPreferences.getString(KEY_PASSWORD, null)
-
+                sharedPreferences.getString(KEY_PASSWORD, null),
+                sharedPreferences.getLong(KEY_ID, 0),
+                sharedPreferences.getInt(KEY_POINTS, 0)
         );
     }
 }

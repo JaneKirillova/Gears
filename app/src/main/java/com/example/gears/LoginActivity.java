@@ -13,11 +13,14 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,36 +53,19 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //converting response to json object
                             JSONObject obj = new JSONObject(response);
+                            System.out.println("\n\n\n" + response + "\n\n\n");
 
-                            //if no error in response
-                            if (!obj.getBoolean("error")) {
-
-                                //getting the user from the response
-                                JSONObject userJson = obj.getJSONObject("user");
-
-                                if (!passwordString.equals(userJson.getString("password"))) {
-                                    Toast.makeText(getApplicationContext(), obj.getString("Wrong username or password"), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                //creating a new user object
                                 User user = new User(
-                                        userJson.getInt("id"),
-                                        userJson.getString("username"),
-                                        userJson.getString("password"));
-
-                                //storing the user in shared preferences
+                                        obj.getString("token"),
+                                        loginString,
+                                        passwordString,
+                                        obj.getLong("id"));
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                                //starting the profile activity
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-                            } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
                         } catch (JSONException e) {
+                            System.out.print("ОШИБКА1: ");
                             e.printStackTrace();
                         }
                     }
@@ -87,13 +73,10 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        User user = new User(1, loginString, passwordString);
-                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-
+                        System.out.print("ОШИБКА2: ");
+                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+                        System.out.println(s);
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override
@@ -104,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
-
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
+
 }

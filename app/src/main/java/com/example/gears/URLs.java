@@ -2,9 +2,13 @@ package com.example.gears;
 
 public class URLs {
 
-    // TODO connect with back
-    private static final String ROOT_URL = "something from backend";
+    private static final String ROOT_URL = "https://5418fc92bdb4.ngrok.io/";
 
-    public static final String URL_REGISTER = ROOT_URL + "signup";
+    public static final String URL_REGISTER = ROOT_URL + "register";
     public static final String URL_LOGIN= ROOT_URL + "login";
+    public static final String URL_FIND_OPPONENT= ROOT_URL + "find-opponent";
+    public static final String URL_GET_GAME= ROOT_URL + "get-game";
+    public static final String URL_UPDATE_GAME= ROOT_URL + "update-game";
+    public static final String URL_END_GAME= ROOT_URL + "end-game";
+    public static final String URL_GEt_USER = ROOT_URL + "get-user";
 }

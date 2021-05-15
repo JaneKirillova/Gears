@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,11 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        if (password1String.length() < 5) {
-            Toast.makeText(RegisterActivity.this, "Password must contains al least 5 symbols", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (!password1String.equals(password2String)) {
             Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
@@ -63,35 +59,18 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //converting response to json object
-                            JSONObject obj = new JSONObject(response);
-
-                            //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
-                                //getting the user from the response
-                                JSONObject userJson = obj.getJSONObject("user");
-
-                                //creating a new user object
+                            JSONObject userJSON = new JSONObject(response);
                                 User user = new User(
-                                        userJson.getInt("id"),
-                                        userJson.getString("username"),
-                                        userJson.getString("password")
+                                        userJSON.getString("token"),
+                                        loginString,
+                                        password1String,
+                                        userJSON.getLong("id")
                                 );
-
-                                // TODO add user to the base (??)
-
-                                //storing the user in shared preferences
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                                //starting the profile activity
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-                            } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
                         } catch (JSONException e) {
+                            System.out.println();;
                             e.printStackTrace();
                         }
                     }
@@ -99,12 +78,11 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        User user = new User(1, loginString, password1String);
-                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                        System.out.print("ОШИБКА2: ");
+                        assert (error != null);
+                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+                        System.out.println(s);
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override
@@ -115,8 +93,6 @@ public class RegisterActivity extends AppCompatActivity {
                 return params;
             }
         };
-
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-
     }
 }
