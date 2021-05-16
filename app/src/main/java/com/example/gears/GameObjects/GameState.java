@@ -1,4 +1,6 @@
-package com.example.gears;
+package com.example.gears.GameObjects;
+
+import com.example.gears.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,15 @@ public class GameState {
         countPlayersLeftGame = 0;
     }
 
-    public GameState() {}
+    public GameState() {
+        scoreOfFirstPlayer = 0L;
+        scoreOfSecondPlayer = 0L;
+        firstPlayerBoard = new Board();
+        secondPlayerBoard = new Board();
+        turn = new Turn();
+        currentGameState = CurrentGameState.CONTINUE;
+        countPlayersLeftGame = 0;
+    }
 
     public Board getFirstPlayerBoard() {
         return firstPlayerBoard;

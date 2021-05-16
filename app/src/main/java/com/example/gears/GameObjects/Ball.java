@@ -1,4 +1,4 @@
-package com.example.gears;
+package com.example.gears.GameObjects;
 
 public class Ball {
     private int chosenGear;

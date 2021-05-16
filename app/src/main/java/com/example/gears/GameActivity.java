@@ -1,13 +1,11 @@
 package com.example.gears;
 
-import android.app.DownloadManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,31 +14,30 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.gears.GameObjects.Board;
+import com.example.gears.GameObjects.GameState;
+import com.example.gears.GameObjects.Gear;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
-    List<GearImage> gears = new LinkedList<>();
-    GameState gameState = new GameState();
-    Gson gson = new Gson();
+    private ArrayList<GearImage> gears = new ArrayList<>();
+    private GameState gameState;
+    private Board board;
+    private Gson gson = new Gson();
+    private int activeGearNum = 0;
 
     private void getGame() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_GET_GAME,
@@ -126,14 +123,15 @@ public class GameActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        getGame();
-        sendGame();
+//        initGameState();
+//        getGame();
+//        sendGame();
 
-       /* gears.add(new GearImage(1));
-        gears.add(new GearImage(3));
-        gears.add(new GearImage(2));
-        gears.add(new GearImage(4));
-        gears.add(new GearImage(5));
+        gears.add(new GearImage(1, 1));
+        gears.add(new GearImage(3, 2));
+        gears.add(new GearImage(2, 3));
+        gears.add(new GearImage(4, 4));
+        gears.add(new GearImage(5, 5));
 
 
 
@@ -187,7 +185,7 @@ public class GameActivity extends AppCompatActivity {
         gears.get(4).holes.get(4).dialer = findViewById(R.id.imageView_gear5_hole5);
 
         gears.get(0).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear1_ball1);
-//        gears.get(0).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(0).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
 
 
         gears.get(1).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear2_ball1);
@@ -223,10 +221,28 @@ public class GameActivity extends AppCompatActivity {
         gears.get(4).holes.get(4).ball.dialer = findViewById(R.id.imageView_gear5_ball5);
         gears.get(4).holes.get(4).ball.dialer.setVisibility(View.INVISIBLE);
 
+        gears.get(0).selectingButton = findViewById(R.id.button1);
+        gears.get(1).selectingButton = findViewById(R.id.button2);
+        gears.get(2).selectingButton = findViewById(R.id.button3);
+
+        for (int i = 0; i < 3; i++) {
+            int finalI = i;
+            gears.get(i).selectingButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    activeGearNum = gears.get(finalI).gearNumber - 1;
+                }
+            });
+        }
 
 
+        initGameState();
+
+        int gearNumber = 0;
         for (GearImage gear: gears) {
-            gear.dialer.setOnTouchListener(new MyOnTouchListener(gear));
+            gear.dialer.setOnTouchListener(new MyOnTouchListener(gear, gearNumber));
+            gearNumber++;
             gear.dialer.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
                 if (gear.dialerHeight == 0 || gear.dialerWidth == 0) {
                     gear.dialerHeight = gear.dialer.getHeight();
@@ -266,7 +282,9 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
             });
-        }*/
+        }
+
+
 
     }
 
@@ -298,17 +316,38 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    private void initGameState() {
+        gameState = new GameState();
+        ArrayList<Gear> gearsToAddToBoard = new ArrayList<>();
+        int gearNum = 1;
+        for (GearImage gearImage: gears) {
+            Gear newGear = new Gear(gearImage.getHolesNumber(), gearNum == 5, gearNum == 1, GearImage.getNeighbors(gearNum));
+            gearsToAddToBoard.add(newGear);
+            gearImage.setGear(newGear);
+            gearImage.setNeighbours(newGear.getNeighbours());
+            gearImage.setHoles();
+            gearNum++;
+        }
+        gameState.getFirstPlayerBoard().setGears(gearsToAddToBoard);
+        board = gameState.getFirstPlayerBoard();
+    }
+
     private class MyOnTouchListener implements View.OnTouchListener {
+        private int gearNum;
 
         private double startAngle;
         private GearImage gearImage;
 
-        public MyOnTouchListener(GearImage gearImage) {
+        public MyOnTouchListener(GearImage gearImage, int gearNum) {
             this.gearImage = gearImage;
+            this.gearNum = gearNum;
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            if (gearNum != activeGearNum) {
+                return false;
+            }
 
             switch (event.getAction()) {
 
@@ -318,7 +357,11 @@ public class GameActivity extends AppCompatActivity {
 
                 case MotionEvent.ACTION_MOVE: // произошло изменение в активом действии
                     double currentAngle = getAngle(event.getX(), event.getY());
-                    rotateDialer((float) (startAngle - currentAngle));
+                    if (Math.abs(startAngle - currentAngle) < 5) {
+                        return true;
+                    }
+                    rotateWithMonitoringBalls((float) (startAngle - currentAngle));
+//                    rotateDialer((float) (startAngle - currentAngle));
                     startAngle = currentAngle;
                     break;
 
@@ -357,6 +400,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
 
+
         private void rotateDialer(float degrees) {
             gearImage.matrix.postRotate(degrees, gearImage.dialerWidth / 2, gearImage.dialerHeight / 2);
             gearImage.dialer.setImageMatrix(gearImage.matrix);
@@ -368,7 +412,62 @@ public class GameActivity extends AppCompatActivity {
                 holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
             }
         }
+
+
+        private void rotateWithMonitoringBalls(float degree) {
+//            if (degree > 0) {
+//                rotateDialer(degree);
+//                return;
+//            }
+            double step = 2.5;
+            float degreesToRotateOneTime = degree / (float) step;
+            if (degree < 0) {
+                step *= -1;
+            }
+            for (int i = 0; i < (int) (Math.abs(degree) / Math.abs(step)); i++) {
+                gears.get(activeGearNum).accumulatedAngle = gears.get(activeGearNum).accumulatedAngle + step;
+                rotateDialer((float) step);
+                if (step > 0 && (gears.get(activeGearNum).accumulatedAngle == 10 || gears.get(activeGearNum).accumulatedAngle == 0)) {
+                    redraw(10);
+                    gears.get(activeGearNum).accumulatedAngle = 0;
+                }
+                if (step < 0 && (gears.get(activeGearNum).accumulatedAngle == -10 || gears.get(activeGearNum).accumulatedAngle == 0)) {
+                    redraw(-10);
+                    gears.get(activeGearNum).accumulatedAngle = 0;
+                }
+            }
+        }
     }
 
+    private void redraw(int degree) {
+        board.rebuild(degree, activeGearNum);
+        gears.get(activeGearNum).setGear(board.getGears().get(activeGearNum));
+        for (Integer neighbor: gears.get(activeGearNum).getNeighbours()) {
+            if (neighbor == -1) {
+                continue;
+            }
+            gears.get(neighbor).setGear(board.getGears().get(neighbor));
+        }
+        List<Integer> allGearsToRedraw = new ArrayList<>();
+        allGearsToRedraw.add(activeGearNum);
+        allGearsToRedraw.addAll(gears.get(activeGearNum).getNeighbours());
+        for (Integer gearNumber: allGearsToRedraw) {
+            if (gearNumber == -1) {
+                continue;
+            }
+            GearImage gearImage = gears.get(gearNumber);
+            for (HoleImage holeImage: gearImage.getHoles()) {
+                if (holeImage.hole.isFree()) {
 
+                }
+            }
+        }
+        for (HoleImage holeImage: gears.get(activeGearNum).getHoles()) {
+            if (holeImage.hole.isFree()) {
+                holeImage.ball.dialer.setVisibility(View.INVISIBLE);
+            } else {
+                holeImage.ball.dialer.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 }

@@ -1,6 +1,10 @@
-package com.example.gears;
+package com.example.gears.GameObjects;
+
+import com.example.gears.GearImage;
+import com.example.gears.HoleImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Gear {
     private int degree;
@@ -8,13 +12,31 @@ public class Gear {
     private final boolean isFirst;
     ArrayList<Hole> holes = new ArrayList<>();
     private final int numberOfHoles;
-    ArrayList<Integer> neighbours;
+    List<Integer> neighbours;
 
-    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, ArrayList<Integer> neighbours) {
+    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, List<Integer> neighbours) {
         this.numberOfHoles = numberOfHoles;
         this.isLast = isLast;
         this.isFirst = isFirst;
         this.neighbours = neighbours;
+        int currentDegreeToAdd = 0;
+        int step = 360 / numberOfHoles;
+        for (int i = 0; i < numberOfHoles; i++) {
+            Hole bufferHole = new Hole(i);
+            bufferHole.setDegree(currentDegreeToAdd);
+            holes.add(i, bufferHole);
+            currentDegreeToAdd += step;
+        }
+    }
+
+    public Gear(GearImage gearImage, boolean isLast, boolean isFirst, List<Integer> neighbours) {
+        this.numberOfHoles = gearImage.getHolesNumber();
+        this.isLast = isLast;
+        this.isFirst = isFirst;
+        this.neighbours = neighbours;
+        for (HoleImage holeImage: gearImage.getHoles()) {
+
+        }
         int currentDegreeToAdd = 0;
         int step = 360 / numberOfHoles;
         for (int i = 0; i < numberOfHoles; i++) {
@@ -33,7 +55,7 @@ public class Gear {
         return degree;
     }
 
-    public ArrayList<Integer> getNeighbours() {
+    public List<Integer> getNeighbours() {
         return neighbours;
     }
 
@@ -57,7 +79,7 @@ public class Gear {
         return isFirst;
     }
 
-    protected class Hole {
+    public class Hole {
         private final int capacity;
         private int degree;
         private boolean isFree = true;
