@@ -14,6 +14,7 @@ public class SharedPrefManager {
     private static final String KEY_ID = "keyid";
     private static final String KEY_POINTS = "keypoints";
     private static final String KEY_CURRENT_GAME_ID = "keycurrentgameid";
+    private static final String KEY_IS_FIRS_PLAYER = "keyisfirstplayer";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -40,18 +41,27 @@ public class SharedPrefManager {
         editor.apply();
     }
 
+    public void writeGame(String gameId, Boolean isFirstPlayer) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_CURRENT_GAME_ID, gameId);
+        editor.putBoolean(KEY_IS_FIRS_PLAYER, isFirstPlayer);
+        editor.apply();
+    }
+
     public void setUserPoint(int points) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(KEY_POINTS, points);
-    }
-
-    public void setCurrentGameId(long id) {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(KEY_CURRENT_GAME_ID, id);
         editor.apply();
     }
+
+//    public void setCurrentGameId(long id) {
+//        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putLong(KEY_CURRENT_GAME_ID, id);
+//        editor.apply();
+//    }
 
     public User getUser() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);

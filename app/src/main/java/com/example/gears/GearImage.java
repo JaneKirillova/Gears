@@ -10,26 +10,64 @@ import com.example.gears.GameObjects.Gear;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 public class GearImage {
-    public static List<Integer> getNeighbors(int gearNum) {
+//    public static List<Integer> getNeighbors(int gearNum) {
+//        switch (gearNum) {
+//            case (1):
+//                return Arrays.asList(-1, 2);
+//            case (2):
+//                return Arrays.asList(1, 3, 4);
+//            case(3):
+//                return Arrays.asList(2, 4, 5);
+//            case (4):
+//                return Arrays.asList(2, 3, 5);
+//            case (5):
+//                return Arrays.asList(3, 4, -1);
+//        }
+//        return null;
+//    }
+
+    public static List<Integer> getUpperNeighborsList(int gearNum) {
         switch (gearNum) {
             case (1):
-                return Arrays.asList(-1, 2);
+                return Collections.emptyList();
             case (2):
-                return Arrays.asList(1, 3, 4);
+                return Collections.singletonList(0);
             case(3):
-                return Arrays.asList(2, 4, 5);
+                return Collections.singletonList(1);
             case (4):
-                return Arrays.asList(2, 3, 5);
+                return Arrays.asList(1, 2);
             case (5):
-                return Arrays.asList(3, 4, -1);
+                return Arrays.asList(2, 3);
         }
         return null;
     }
+
+    public List<Integer> getDownNeighbours() {
+        return downNeighbours;
+    }
+
+    public static List<Integer> getDownNeighborsList(int gearNum) {
+        switch (gearNum) {
+            case (1):
+                return Collections.singletonList(1);
+            case (2):
+                return Arrays.asList(2, 3);
+            case(3):
+                return Arrays.asList(3, 4);
+            case (4):
+                return Collections.singletonList(4);
+            case (5):
+                return Collections.emptyList();
+        }
+        return null;
+    }
+
 
     public Bitmap image;
     public Matrix matrix;
@@ -40,6 +78,17 @@ public class GearImage {
     Gear gear = null;
     List<HoleImage> holes = new ArrayList<>();
     List<Integer> neighbours;
+
+    public List<Integer> getNeighboursList() {
+        return neighbours;
+    }
+
+    public List<Integer> getUpperNeighbours() {
+        return upperNeighbours;
+    }
+
+    List<Integer> upperNeighbours;
+    List<Integer> downNeighbours;
     public double accumulatedAngle = 0;
     public Button selectingButton;
     public int gearNumber;
@@ -67,13 +116,14 @@ public class GearImage {
         this.gear = gear;
     }
 
-    public void setNeighbours(List<Integer> neighbours) {
-        this.neighbours = neighbours;
+    public void setNeighbours(List<Integer> upperNeighbours, List<Integer> downNeighbours) {
+        this.upperNeighbours = upperNeighbours;
+        this.downNeighbours = downNeighbours;
     }
-
-    public List<Integer> getNeighbours() {
-        return neighbours;
-    }
+//
+//    public List<Integer> getNeighbours() {
+//        return neighbours;
+//    }
 
     public void setHoles() {
         ListIterator<HoleImage> iterator = holes.listIterator();

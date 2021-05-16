@@ -125,7 +125,10 @@ public class PersonalAccountActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject obj = new JSONObject(response);
-                            System.out.println("\n\n\n" + response + "\n\n\n");
+                            String gameId = (String) obj.names().get(0);
+                            Boolean isFirstPlayer = obj.getBoolean(gameId);
+                            SharedPrefManager.getInstance(getApplicationContext()).writeGame(gameId, isFirstPlayer);
+                            
 
                         } catch (JSONException e) {
                             System.out.print("ОШИБКА1: ");

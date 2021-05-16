@@ -12,31 +12,32 @@ public class Gear {
     private final boolean isFirst;
     ArrayList<Hole> holes = new ArrayList<>();
     private final int numberOfHoles;
-    List<Integer> neighbours;
 
-    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, List<Integer> neighbours) {
+    public List<Integer> getDownNeighbours() {
+        return downNeighbours;
+    }
+
+    public void setDownNeighbours(List<Integer> downNeighbours) {
+        this.downNeighbours = downNeighbours;
+    }
+
+    public List<Integer> getUpperNeighbours() {
+        return upperNeighbours;
+    }
+
+    public void setUpperNeighbours(List<Integer> upperNeighbours) {
+        this.upperNeighbours = upperNeighbours;
+    }
+
+    //ArrayList<Integer> neighbours;
+    List<Integer> downNeighbours;
+    List<Integer> upperNeighbours;
+    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, List<Integer> downNeighbours, List<Integer> upperNeighbours) {
         this.numberOfHoles = numberOfHoles;
         this.isLast = isLast;
         this.isFirst = isFirst;
-        this.neighbours = neighbours;
-        int currentDegreeToAdd = 0;
-        int step = 360 / numberOfHoles;
-        for (int i = 0; i < numberOfHoles; i++) {
-            Hole bufferHole = new Hole(i);
-            bufferHole.setDegree(currentDegreeToAdd);
-            holes.add(i, bufferHole);
-            currentDegreeToAdd += step;
-        }
-    }
-
-    public Gear(GearImage gearImage, boolean isLast, boolean isFirst, List<Integer> neighbours) {
-        this.numberOfHoles = gearImage.getHolesNumber();
-        this.isLast = isLast;
-        this.isFirst = isFirst;
-        this.neighbours = neighbours;
-        for (HoleImage holeImage: gearImage.getHoles()) {
-
-        }
+        this.downNeighbours = downNeighbours;
+        this.upperNeighbours = upperNeighbours;
         int currentDegreeToAdd = 0;
         int step = 360 / numberOfHoles;
         for (int i = 0; i < numberOfHoles; i++) {
@@ -53,10 +54,6 @@ public class Gear {
 
     public int getDegree() {
         return degree;
-    }
-
-    public List<Integer> getNeighbours() {
-        return neighbours;
     }
 
     public void setDegree(int degree) {
