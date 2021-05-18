@@ -1,8 +1,5 @@
 package com.example.gears.GameObjects;
 
-import com.example.gears.GearImage;
-import com.example.gears.HoleImage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +7,33 @@ public class Gear {
     private int degree;
     private final boolean isLast;
     private final boolean isFirst;
-    ArrayList<Hole> holes = new ArrayList<>();
+    List<Hole> holes = new ArrayList<>();
     private final int numberOfHoles;
 
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+    public void setXY(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    private  float x;
+    private  float y;
+    private final int radius;
     public List<Integer> getDownNeighbours() {
         return downNeighbours;
     }
 
-    public void setDownNeighbours(List<Integer> downNeighbours) {
+    public void setDownNeighbours(ArrayList<Integer> downNeighbours) {
         this.downNeighbours = downNeighbours;
     }
 
@@ -25,17 +41,21 @@ public class Gear {
         return upperNeighbours;
     }
 
-    public void setUpperNeighbours(List<Integer> upperNeighbours) {
+    public void setUpperNeighbours(ArrayList<Integer> upperNeighbours) {
         this.upperNeighbours = upperNeighbours;
     }
 
     //ArrayList<Integer> neighbours;
     List<Integer> downNeighbours;
     List<Integer> upperNeighbours;
-    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, List<Integer> downNeighbours, List<Integer> upperNeighbours) {
+    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, float x, float y, int radius,
+                List<Integer> downNeighbours, List<Integer> upperNeighbours) {
         this.numberOfHoles = numberOfHoles;
         this.isLast = isLast;
         this.isFirst = isFirst;
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
         this.downNeighbours = downNeighbours;
         this.upperNeighbours = upperNeighbours;
         int currentDegreeToAdd = 0;
@@ -64,7 +84,7 @@ public class Gear {
         }
     }
 
-    public ArrayList<Hole> getHoles() {
+    public List<Hole> getHoles() {
         return holes;
     }
 

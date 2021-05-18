@@ -128,7 +128,7 @@ public class PersonalAccountActivity extends AppCompatActivity {
                             String gameId = (String) obj.names().get(0);
                             Boolean isFirstPlayer = obj.getBoolean(gameId);
                             SharedPrefManager.getInstance(getApplicationContext()).writeGame(gameId, isFirstPlayer);
-                            
+
 
                         } catch (JSONException e) {
                             System.out.print("ОШИБКА1: ");
