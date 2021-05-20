@@ -85,11 +85,11 @@ public class Board {
                         this.getRightGutter().setHowManyBalls(getRightGutter().getHowManyBalls() - holeOfChangingGear.getCapacity());
                     }
                     holeOfChangingGear.setFree(false);
-                    changingGear.getHoles().set(holeOfChangingGear.getNumberOfHole(), holeOfChangingGear);
+//                    changingGear.getHoles().set(holeOfChangingGear.getNumberOfHole(), holeOfChangingGear);
                 }
             }
-            List<Gear> arrayOfGears = this.getGears();
-            arrayOfGears.set(activeGear, changingGear);
+//            List<Gear> arrayOfGears = this.getGears();
+//            arrayOfGears.set(activeGear, changingGear);
         }
     }
 
@@ -109,17 +109,13 @@ public class Board {
     }
 
     private boolean connectionHoleWithGearsCenter(Gear upperGear, Gear downGear, Gear.Hole upperHole) {
-        System.out.println("!!!!! degInconnection: " + upperGear.getDegree() + " !!!!!!!");
-//        conDegree = upperGear.getDegree();
-//        if (conDegree != buildDegree) {
-//            System.out.println("gggg");
-//        }
-//        if (upperHole.getDegree() == 60) {
-//
-//        }
+        if (upperGear.getDegree() == 60 && downGear.getDegree() == 60) {
+            System.out.println("yy");
+        }
+
         int upperRadius = upperGear.getRadius();
         int downRadius = downGear.getRadius();
-        int sumRadius = upperRadius + downRadius + 70;
+        int sumRadius = upperRadius + downRadius + 20;
         double deg = 90 - upperHole.getDegree();
         double x = sumRadius * Math.cos(Math.toRadians(deg));
         double y = sumRadius * Math.sin(Math.toRadians(deg));
@@ -147,11 +143,11 @@ public class Board {
                         if (checkDegreeEquals(holeUpperGear, holeDownGear, upperGear.getX(), downGear.getX())) {
                             holeDownGear.setFree(false);
                             holeUpperGear.setFree(true);
-                            break;
+//                            break;
                         }
                     }
                 }
-                break;
+//                break;
             }
         }
     }

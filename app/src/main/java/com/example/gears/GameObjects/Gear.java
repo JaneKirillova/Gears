@@ -22,8 +22,8 @@ public class Gear {
         return radius;
     }
     public void setXY(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x = x + radius / 2;
+        this.y = y + radius / 2;
     }
 
     private  float x;
@@ -118,7 +118,7 @@ public class Gear {
         }
 
         public void setDegree(int degree) {
-            this.degree = degree % 360;
+            this.degree = (360 + degree) % 360;
         }
 
         public boolean isFree() {

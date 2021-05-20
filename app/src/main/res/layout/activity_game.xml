@@ -13,42 +13,32 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_x="150dp"
-        android:layout_y="50dp"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
-
 
     <ImageView
         android:id="@+id/imageView_gear1_hole1"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_x="150dp"
-        android:layout_y="50dp"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
-    <ImageView
-        android:id="@+id/imageView_gear1_ball1"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_x="150dp"
-        android:layout_y="50dp"
-        android:contentDescription="TODO"
-        android:scaleType="matrix"
-        android:src="@drawable/ball" />
+
 
     <ImageView
         android:id="@+id/imageView_gear2"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
@@ -58,8 +48,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -69,8 +59,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -80,8 +70,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -91,8 +81,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -102,8 +92,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -113,167 +103,175 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:layout_x="0dp"
-        android:layout_y="154dp"
+        android:layout_x="54dp"
+        android:layout_y="153dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
 
     <ImageView
-        android:id="@+id/imageView_gear3"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:id="@+id/imageView_gear1_ball1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_x="174dp"
-        android:layout_y="272dp"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="200dp"
+        android:layout_y="251dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
 
-
-
     <ImageView
         android:id="@+id/imageView_gear3_hole1"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
         android:layout_gravity="center"
-        android:layout_x="174dp"
-        android:layout_y="272dp"
+        android:layout_x="200dp"
+        android:layout_y="251dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
     <ImageView
         android:id="@+id/imageView_gear3_ball1"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
         android:layout_gravity="center"
-        android:layout_x="174dp"
-        android:layout_y="272dp"
+        android:layout_x="200dp"
+        android:layout_y="251dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
     <ImageView
         android:id="@+id/imageView_gear3_hole2"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
         android:layout_gravity="center"
-        android:layout_x="174dp"
-        android:layout_y="272dp"
+        android:layout_x="200dp"
+        android:layout_y="251dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
+
     <ImageView
         android:id="@+id/imageView_gear3_ball2"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
         android:layout_gravity="center"
-        android:layout_x="174dp"
-        android:layout_y="272dp"
+        android:layout_x="200dp"
+        android:layout_y="251dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
-
-
     <ImageView
         android:id="@+id/imageView_gear4"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
 
     <ImageView
         android:id="@+id/imageView_gear4_hole1"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
     <ImageView
         android:id="@+id/imageView_gear4_ball1"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
     <ImageView
         android:id="@+id/imageView_gear4_hole2"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
     <ImageView
         android:id="@+id/imageView_gear4_ball2"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
     <ImageView
         android:id="@+id/imageView_gear4_hole3"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
     <ImageView
         android:id="@+id/imageView_gear4_ball3"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
     <ImageView
         android:id="@+id/imageView_gear4_hole4"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
 
     <ImageView
         android:id="@+id/imageView_gear4_ball4"
-        android:layout_width="170dp"
+        android:layout_width="166dp"
         android:layout_height="166dp"
         android:layout_gravity="center"
         android:layout_x="0dp"
-        android:layout_y="336dp"
+        android:layout_y="313dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -283,8 +281,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
@@ -294,8 +292,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -305,8 +303,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -316,8 +314,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -327,8 +325,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -338,8 +336,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -349,8 +347,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -360,8 +358,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -371,8 +369,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
@@ -382,8 +380,8 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/hole" />
@@ -393,19 +391,19 @@
         android:layout_width="190dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_x="205dp"
-        android:layout_y="415dp"
+        android:layout_x="150dp"
+        android:layout_y="396dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/ball" />
 
     <ImageView
         android:id="@+id/imageView_end"
-        android:layout_width="190dp"
-        android:layout_height="210dp"
+        android:layout_width="134dp"
+        android:layout_height="195dp"
         android:layout_gravity="center"
         android:layout_x="8dp"
-        android:layout_y="518dp"
+        android:layout_y="533dp"
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/end" />
@@ -414,24 +412,24 @@
         android:id="@+id/button1"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_x="180dp"
-        android:layout_y="77dp"
+        android:layout_x="250dp"
+        android:layout_y="131dp"
         android:text="1" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_x="59dp"
-        android:layout_y="221dp"
+        android:layout_x="113dp"
+        android:layout_y="209dp"
         android:text="2" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_x="197dp"
-        android:layout_y="299dp"
+        android:layout_x="257dp"
+        android:layout_y="312dp"
         android:text="3" />
 
     <Button
@@ -446,8 +444,8 @@
         android:id="@+id/button5"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_x="274dp"
-        android:layout_y="488dp"
+        android:layout_x="228dp"
+        android:layout_y="467dp"
         android:text="5" />
 
 

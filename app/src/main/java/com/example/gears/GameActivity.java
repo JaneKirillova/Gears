@@ -371,6 +371,9 @@ public class GameActivity extends AppCompatActivity {
         for (GearImage gearImage: gears) {
             int[] posXY = new int[2];
             gearImage.dialer.getLocationOnScreen(posXY);
+            if (gearNum == 1) {
+                System.out.println("p");
+            }
             Gear newGear = new Gear(gearImage.getHolesNumber(), gearNum == 5, gearNum == 1,
                     posXY[0] + gearImage.dialer.getLayoutParams().width / 2,
                     posXY[1] + gearImage.dialer.getLayoutParams().height / 2,
@@ -383,8 +386,12 @@ public class GameActivity extends AppCompatActivity {
             gearNum++;
         }
         gameState.getFirstPlayerBoard().setGears(gearsToAddToBoard);
-        gameState.getFirstPlayerBoard().getGears().get(0).setXY(393, 131);
-        gameState.getFirstPlayerBoard().getGears().get(1).setXY(0, 404);
+        gameState.getFirstPlayerBoard().getGears().get(0).setXY(540, 183);
+        gameState.getFirstPlayerBoard().getGears().get(1).setXY(141, 401);
+        gameState.getFirstPlayerBoard().getGears().get(2).setXY(559, 698);
+        gameState.getFirstPlayerBoard().getGears().get(3).setXY(0, 821);
+        gameState.getFirstPlayerBoard().getGears().get(4).setXY(417, 1060);
+
         board = gameState.getFirstPlayerBoard();
     }
 
@@ -392,7 +399,10 @@ public class GameActivity extends AppCompatActivity {
         private int gearNum;
 
         private double startAngle;
+        private double startX;
+        private double startY;
         private GearImage gearImage;
+        double accumulator = 0;
 
         public MyOnTouchListener(GearImage gearImage, int gearNum) {
             this.gearImage = gearImage;
@@ -408,17 +418,73 @@ public class GameActivity extends AppCompatActivity {
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN: // начало действия
+                    startX = event.getX();
+                    startY = event.getY();
                     startAngle = getAngle(event.getX(), event.getY());
                     break;
 
                 case MotionEvent.ACTION_MOVE: // произошло изменение в активом действии
                     double currentAngle = getAngle(event.getX(), event.getY());
-                    if (Math.abs(startAngle - currentAngle) < 5) {
+                    if (Math.abs(currentAngle - startAngle) < 3 || Math.abs(currentAngle - startAngle) > 300) {
                         return true;
                     }
-                    rotateWithMonitoringBalls((float) (startAngle - currentAngle));
+                    System.out.println("!!!!!!!!! st: " + startAngle + " cur: " + currentAngle + " dir " + getDirection(startX, startY, event.getX(), event.getY()));
+
                     startAngle = currentAngle;
+                    startX = event.getX();
+                    startY = event.getY();
+                    boolean isClockDirection = getDirection(startX, startY, event.getX(), event.getY());
+                    if (!isClockDirection) {
+                    System.out.println("ЦВЕТОЧКИ");
+                    getDirection(startX, startY, event.getX(), event.getY());
+                }
+//                    double currentAngle = getAngle(event.getX(), event.getY());
+                    if (startAngle - currentAngle < 0) {
+                        System.out.println("kkk");
+                    }
+                    double anglesDelta = startAngle - currentAngle;
+                    if (anglesDelta < 0) {
+                        System.out.println("cc");
+                    }
+
+                    if (isClockDirection) {
+                        if (startAngle < currentAngle) {
+                            anglesDelta = startAngle + 360 - currentAngle;
+                        } else {
+                            anglesDelta = Math.abs(anglesDelta);
+                        }
+                    } else {
+                        if (startAngle > currentAngle) {
+                            anglesDelta = - (360 - startAngle + currentAngle);
+                        } else {
+                            anglesDelta = -Math.abs(anglesDelta);
+                        }
+                    }
+                    if (anglesDelta > 180) {
+                        System.out.println("[[[[[[[[[[[");
+                    }
+
+
+                    accumulator += anglesDelta;
+                    startAngle = currentAngle;
+                    startX = event.getX();
+                    startY = event.getY();
+                    if (Math.abs(accumulator) < 5) {
+                        break;
+                    }
+
+                    System.out.println("ROTATEROTATEROTATEROTATEROTATE" + (startAngle - currentAngle) + "ROTATEROTATEROTATEROTATEROTATE");
+                    if (event.getHistorySize() > 10) {
+                        System.out.println("x");
+                    }
+//                    if (accumulator > )
+                    rotateWithMonitoringBalls((float) (accumulator));
+                    accumulator = 0;
+//                    startAngle = currentAngle;
+//                    startX = event.getX();
+//                    startY = event.getY();
                     break;
+
 
                 case MotionEvent.ACTION_UP: // действие закончилось
 
@@ -426,6 +492,54 @@ public class GameActivity extends AppCompatActivity {
             }
 
             return true;
+        }
+
+        private boolean getDirection(double startX, double startY, double newX, double newY) {
+            double relativeToGearCenterStartX = startX - (gearImage.dialerWidth / 2d);
+
+            double relativeToGearCenterStartY = gearImage.dialerHeight - startY - (gearImage.dialerHeight / 2d);
+
+            double relativeToGearCenterNewX = newX - (gearImage.dialerWidth / 2d);
+            double relativeToGearCenterNewY = gearImage.dialerHeight - newY - (gearImage.dialerHeight / 2d);
+
+            int quadrantStartXY = getQuadrant(relativeToGearCenterStartX, relativeToGearCenterStartY);
+            int quadrantNewXY = getQuadrant(relativeToGearCenterNewX, relativeToGearCenterNewY);
+            if (quadrantStartXY == quadrantNewXY) {
+                if (quadrantStartXY == 1)  {
+                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
+                        return relativeToGearCenterNewX - relativeToGearCenterStartX > 0;
+                    }
+                    return relativeToGearCenterNewY - relativeToGearCenterStartY >= 0;
+                }
+                if (quadrantStartXY == 2) {
+                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
+                        return relativeToGearCenterNewX - relativeToGearCenterStartX > 0;
+                    }
+                    return relativeToGearCenterNewY - relativeToGearCenterStartY <= 0;
+                }
+
+                if (quadrantStartXY == 4) {
+                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
+                        return relativeToGearCenterNewX - relativeToGearCenterStartX < 0;
+                    }
+                    return relativeToGearCenterNewY - relativeToGearCenterStartY >= 0;
+                }
+                if (quadrantNewXY == 3) {
+                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
+                        return relativeToGearCenterNewX - relativeToGearCenterStartX < 0;
+                    }
+                    return relativeToGearCenterNewY - relativeToGearCenterStartY <= 0;
+                }
+            }
+
+
+            if (quadrantStartXY == 4 && quadrantNewXY == 1) {
+                return false;
+            }
+            if (quadrantStartXY > quadrantNewXY || (quadrantStartXY == 1 && quadrantNewXY == 4)) {
+                return true;
+            }
+            return false;
         }
 
         private double getAngle(double xTouch, double yTouch) {
@@ -468,61 +582,84 @@ public class GameActivity extends AppCompatActivity {
 
 
         private void rotateWithMonitoringBalls(float degree) {
-            System.out.println("!!!!!!!!!!  right deg: " + gearImage.gear.getHoles().get(0).getDegree() + "   !!!!!!!!!!!!!!!!!!!!!!!!!111");
-            double step = 2.5;
-            if (degree < 0) {
-                step *= -1;
-            }
-            for (int i = 0; i < (int) (Math.abs(degree) / Math.abs(step)); i++) {
-                gears.get(activeGearNum).accumulatedAngle = gears.get(activeGearNum).accumulatedAngle + step;
-                rotateDialer((float) step);
-                if (step > 0 && (gears.get(activeGearNum).accumulatedAngle == 10)) {
-                    redraw(10);
-                    gears.get(activeGearNum).accumulatedAngle = 0;
-                }
-                if (step < 0 && (gears.get(activeGearNum).accumulatedAngle == -10)) {
-                    redraw(-10);
-                    gears.get(activeGearNum).accumulatedAngle = 0;
-                }
-            }
-        }
-    }
-
-    private void redraw(int degree) {
-        if (gears.get(activeGearNum).gear.getDegree() == 50) {
-            System.out.println("aaaaa");
-        }
-        board.rebuild(degree, activeGearNum);
-        gears.get(activeGearNum).setGear(board.getGears().get(activeGearNum));
-        for(Integer neighbor: gears.get(activeGearNum).getUpperNeighbours()) {
-            gears.get(neighbor).setGear(board.getGears().get(neighbor));
-        }
-
-        for(Integer neighbor: gears.get(activeGearNum).getDownNeighbours()) {
-            gears.get(neighbor).setGear(board.getGears().get(neighbor));
-        }
-        List<Integer> allGearsToRedraw = new ArrayList<>();
-        allGearsToRedraw.add(activeGearNum);
-        allGearsToRedraw.addAll(gears.get(activeGearNum).getUpperNeighbours());
-        allGearsToRedraw.addAll(gears.get(activeGearNum).getDownNeighbours());
-        for (Integer gearNumber: allGearsToRedraw) {
-            GearImage gearImage = gears.get(gearNumber);
-            for (HoleImage holeImage: gearImage.getHoles()) {
-                if (holeImage.hole.isFree()) {
-                    holeImage.ball.dialer.setVisibility(View.INVISIBLE);
+            System.out.print("!!!!!rotate " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
+            for(int i = 0; i < 3; i++) {
+                Gear.Hole hole = gameState.getFirstPlayerBoard().getGears().get(1).getHoles().get(i);
+                String s;
+                if (hole.isFree()) {
+                    s = "free";
                 } else {
-                    if (gearNumber == 1) {
-
-                        System.out.print("!!!!! ");
-                        for (Gear.Hole hole: gearImage.gear.getHoles()) {
-                            System.out.println(hole.getDegree() + " ");
-                        }
-
-                        System.out.println(" !!!!");
+                    s = "not free";
+                }
+                System.out.print(i + " " + hole.getDegree() + " " + s + " ");
+            }
+            System.out.println(" !!!!");
+//            System.out.println("!!!!!!!!!!  right deg: " + gearImage.gear.getHoles().get(0).getDegree() + "   !!!!!!!!!!!!!!!!!!!!!!!!!111");
+                double step = 2.5;
+                if (degree < 0) {
+                    step *= -1;
+                }
+                if (degree > 360) {
+                    System.out.println("aaa");
+                }
+                for (int i = 0; i < (int) (Math.abs(degree) / Math.abs(step)); i++) {
+                    gears.get(activeGearNum).accumulatedAngle = gears.get(activeGearNum).accumulatedAngle + step;
+                    rotateDialer((float) step);
+                    if (step > 0 && (gears.get(activeGearNum).accumulatedAngle == 10)) {
+                        redraw(10);
+                        gears.get(activeGearNum).accumulatedAngle = 0;
                     }
-                    holeImage.ball.dialer.setVisibility(View.VISIBLE);
+                    if (step < 0 && (gears.get(activeGearNum).accumulatedAngle == -10)) {
+                        redraw(-10);
+                        gears.get(activeGearNum).accumulatedAngle = 0;
+                    }
                 }
             }
         }
-    }
+
+        private void redraw(int degree) {
+            System.out.print("!!!!!redraw " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
+            for (Gear.Hole hole : gameState.getFirstPlayerBoard().getGears().get(1).getHoles()) {
+                String s;
+                if (hole.isFree()) {
+                    s = "free";
+                } else {
+                    s = "not free";
+                }
+                System.out.print(hole.getDegree() + " " + s + " ");
+
+            }
+
+            System.out.println(" !!!!");
+
+            if (gameState.getFirstPlayerBoard().getGears().get(0).getDegree() == 50) {
+                System.out.println("o");
+            }
+            board.rebuild(degree, activeGearNum);
+
+            List<Integer> allGearsToRedraw = new ArrayList<>();
+            allGearsToRedraw.add(activeGearNum);
+            allGearsToRedraw.addAll(gears.get(activeGearNum).getUpperNeighbours());
+            allGearsToRedraw.addAll(gears.get(activeGearNum).getDownNeighbours());
+            for (Integer gearNumber : allGearsToRedraw) {
+                GearImage gearImage = gears.get(gearNumber);
+                for (HoleImage holeImage : gearImage.getHoles()) {
+                    if (holeImage.hole.isFree()) {
+                        System.out.print("!!!!!inwvisibl " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
+                        for (Gear.Hole hole1 : gameState.getFirstPlayerBoard().getGears().get(1).getHoles()) {
+                            System.out.print(hole1.getDegree() + " " + "free ");
+                        }
+                        System.out.println(" !!!!");
+                        holeImage.ball.dialer.setVisibility(View.INVISIBLE);
+                    } else {
+                        System.out.print("!!!!!visibl " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " "+ gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
+                        for (Gear.Hole hole1 : gameState.getFirstPlayerBoard().getGears().get(0).getHoles()) {
+                            System.out.print(hole1.getDegree() + " " + "not free ");
+                        }
+                        System.out.println(" !!!!");
+                        holeImage.ball.dialer.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
 }
