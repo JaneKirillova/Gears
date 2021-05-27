@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -532,6 +533,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void initGameState() {
         List<Gear> gearsToAddToBoard = new ArrayList<>();
+
         int gearNum = 1;
         for (GearImage gearImage: gears) {
             Gear newGear = new Gear(gearImage.getHolesNumber(), gearNum == 5, gearNum == 1,
@@ -546,6 +548,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         currentBoard.setGears(gearsToAddToBoard);
+        setCoordinates();
 //        currentBoard.getGears().get(0).setXY(540, 183);
 //        currentBoard.getGears().get(1).setXY(178, 391);
 //        currentBoard.getGears().get(2).setXY(535, 637);
@@ -555,6 +558,22 @@ public class GameActivity extends AppCompatActivity {
 
 //        currentBoard = gameState.getFirstPlayerBoard();
     }
+
+    private void setCoordinates() {
+        Display display = getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();  // deprecated
+        int height = display.getHeight();
+        int relativeWidth = 412;
+        int relativeHeight = 791;
+
+        currentBoard.getGears().get(0).setXY(width * 206/ relativeWidth, height * 70 / relativeHeight);
+        currentBoard.getGears().get(1).setXY(width * 68/ relativeWidth, height * 149 / relativeHeight);
+        currentBoard.getGears().get(2).setXY(width * 204/ relativeWidth, height * 243 / relativeHeight);
+        currentBoard.getGears().get(3).setXY(width * 21/ relativeWidth, height * 302 / relativeHeight);
+        currentBoard.getGears().get(4).setXY(width * 167/ relativeWidth, height * 378 / relativeHeight);
+    }
+
+
 
     private class MyOnTouchListener implements View.OnTouchListener {
         private final int gearNum;

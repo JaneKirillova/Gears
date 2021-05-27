@@ -411,8 +411,8 @@
         android:id="@+id/button1"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_x="250dp"
-        android:layout_y="131dp"
+        android:layout_x="263dp"
+        android:layout_y="133dp"
         android:text="1" />
 
     <Button
@@ -451,8 +451,8 @@
         android:id="@+id/end_turn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_x="244dp"
-        android:layout_y="599dp"
+        android:layout_x="302dp"
+        android:layout_y="594dp"
         android:text="end turn" />
 
 
