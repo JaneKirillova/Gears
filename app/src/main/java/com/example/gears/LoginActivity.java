@@ -74,9 +74,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.print("ОШИБКА2: ");
-                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
-                        System.out.println(s);
-                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                        System.out.println(error.getMessage());
+//                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+//                        System.out.println(s);
+//                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override

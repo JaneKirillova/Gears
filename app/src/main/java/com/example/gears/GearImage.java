@@ -16,22 +16,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class GearImage {
-//    public static List<Integer> getNeighbors(int gearNum) {
-//        switch (gearNum) {
-//            case (1):
-//                return Arrays.asList(-1, 2);
-//            case (2):
-//                return Arrays.asList(1, 3, 4);
-//            case(3):
-//                return Arrays.asList(2, 4, 5);
-//            case (4):
-//                return Arrays.asList(2, 3, 5);
-//            case (5):
-//                return Arrays.asList(3, 4, -1);
-//        }
-//        return null;
-//    }
-
     public static List<Integer> getUpperNeighborsList(int gearNum) {
         switch (gearNum) {
             case (1):
@@ -112,18 +96,22 @@ public class GearImage {
         return holes;
     }
 
-    public void setGear(Gear gear) {
-        this.gear = gear;
-    }
-
     public void setNeighbours(List<Integer> upperNeighbours, List<Integer> downNeighbours) {
         this.upperNeighbours = upperNeighbours;
         this.downNeighbours = downNeighbours;
     }
-//
-//    public List<Integer> getNeighbours() {
-//        return neighbours;
-//    }
+
+    public void setGear(Gear gear) {
+        this.gear = gear;
+    }
+
+    public void setGearWithHoles(Gear gear) {
+        this.gear = gear;
+        for (int i = 0; i < gear.getHoles().size(); i++) {
+            holes.get(i).hole = gear.getHoles().get(i);
+        }
+
+    }
 
     public void setHoles() {
         ListIterator<HoleImage> iterator = holes.listIterator();

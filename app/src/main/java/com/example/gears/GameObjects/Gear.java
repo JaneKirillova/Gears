@@ -5,10 +5,20 @@ import java.util.List;
 
 public class Gear {
     private int degree;
-    private final boolean isLast;
-    private final boolean isFirst;
+    private boolean isLast;
+    private boolean isFirst;
     List<Hole> holes = new ArrayList<>();
-    private final int numberOfHoles;
+    private int numberOfHoles;
+
+    public Gear() {}
+
+    public void setIsLast(boolean bool) {
+        this.isLast = bool;
+    }
+
+    public void setIsFirst(boolean bool) {
+        this.isFirst = bool;
+    }
 
     public float getX() {
         return x;
@@ -18,8 +28,11 @@ public class Gear {
         return y;
     }
 
-    public int getRadius() {
+    public float getRadius() {
         return radius;
+    }
+    public void setRadius(float radius) {
+        this.radius = radius;
     }
     public void setXY(int x, int y) {
         this.x = x + radius / 2;
@@ -28,7 +41,7 @@ public class Gear {
 
     private  float x;
     private  float y;
-    private final int radius;
+    private float radius;
     public List<Integer> getDownNeighbours() {
         return downNeighbours;
     }
@@ -45,17 +58,13 @@ public class Gear {
         this.upperNeighbours = upperNeighbours;
     }
 
-    //ArrayList<Integer> neighbours;
     List<Integer> downNeighbours;
     List<Integer> upperNeighbours;
-    public Gear(int numberOfHoles, boolean isLast, boolean isFirst, float x, float y, int radius,
+    public Gear(int numberOfHoles, boolean isLast, boolean isFirst,
                 List<Integer> downNeighbours, List<Integer> upperNeighbours) {
         this.numberOfHoles = numberOfHoles;
         this.isLast = isLast;
         this.isFirst = isFirst;
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
         this.downNeighbours = downNeighbours;
         this.upperNeighbours = upperNeighbours;
         int currentDegreeToAdd = 0;
@@ -96,12 +105,16 @@ public class Gear {
         return isFirst;
     }
 
-    public class Hole {
-        private final int capacity;
+    public static class Hole {
+        private int capacity;
         private int degree;
         private boolean isFree = true;
         private int numberOfBall;
-        private final int numberOfHole;
+        private int numberOfHole;
+
+        public Hole() {
+
+        }
 
         public Hole(int numberOfHole) {
             capacity = 1;

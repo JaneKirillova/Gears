@@ -15,6 +15,8 @@ public class GameState {
     private Turn turn;
     private CurrentGameState currentGameState;
     private int countPlayersLeftGame;
+    private boolean firstPlayerHasInitializedBoard;
+    private boolean secondPlayerHasInitializedBoard;
     public GameState(List<User> users) {
         scoreOfFirstPlayer = 0L;
         scoreOfSecondPlayer = 0L;
@@ -24,6 +26,8 @@ public class GameState {
         turn = new Turn();
         currentGameState = CurrentGameState.CONTINUE;
         countPlayersLeftGame = 0;
+        firstPlayerHasInitializedBoard = false;
+        secondPlayerHasInitializedBoard = false;
     }
 
     public GameState() {
@@ -84,13 +88,29 @@ public class GameState {
         return countPlayersLeftGame;
     }
 
+    public boolean isFirstPlayerHasInitializedBoard() {
+        return firstPlayerHasInitializedBoard;
+    }
+
+    public void setFirstPlayerHasInitializedBoard(boolean firstPlayerHasInitializedBoard) {
+        this.firstPlayerHasInitializedBoard = firstPlayerHasInitializedBoard;
+    }
+
+    public boolean isSecondPlayerHasInitializedBoard() {
+        return secondPlayerHasInitializedBoard;
+    }
+
+    public void setSecondPlayerHasInitializedBoard(boolean secondPlayerHasInitializedBoard) {
+        this.secondPlayerHasInitializedBoard = secondPlayerHasInitializedBoard;
+    }
+
     public enum CurrentPlayer {FIRSTPLAYER, SECONDPLAYER}
     public enum CurrentGameState {CONTINUE, DRAW, FIRSTPLAYER, SECONDPLAYER}
 
-    private class Turn {
+    public class Turn {
         public Turn() {
             this.currentPlayer = CurrentPlayer.FIRSTPLAYER;
-            this.degree = null;
+            this.degree = new ArrayList<>();
         }
 
         public int getNumberOfActiveGear() {
@@ -109,8 +129,15 @@ public class GameState {
             this.degree = degree;
         }
 
+        public void addDegreeToArrayDegree(int degree) {
+            this.degree.add(degree);
+        }
+
         private int numberOfActiveGear = -1;
         private CurrentPlayer currentPlayer;
+
+        public void setCurrentPlayer(CurrentPlayer player) { this.currentPlayer = player; };
+
         private ArrayList<Integer> degree;
     }
 

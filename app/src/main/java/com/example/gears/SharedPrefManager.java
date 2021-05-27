@@ -14,7 +14,7 @@ public class SharedPrefManager {
     private static final String KEY_ID = "keyid";
     private static final String KEY_POINTS = "keypoints";
     private static final String KEY_CURRENT_GAME_ID = "keycurrentgameid";
-    private static final String KEY_IS_FIRS_PLAYER = "keyisfirstplayer";
+    private static final String KEY_CURRENT_GAME_PLAYER_NUM = "keycurrentplayerturnnum";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -41,12 +41,22 @@ public class SharedPrefManager {
         editor.apply();
     }
 
-    public void writeGame(String gameId, Boolean isFirstPlayer) {
+    public void writeGame(String gameId, String playerNum) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_CURRENT_GAME_ID, gameId);
-        editor.putBoolean(KEY_IS_FIRS_PLAYER, isFirstPlayer);
+        editor.putString(KEY_CURRENT_GAME_PLAYER_NUM, playerNum);
         editor.apply();
+    }
+
+    public String getGameId() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_CURRENT_GAME_ID, null);
+    }
+
+    public String getCurrentPlayerNum() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_CURRENT_GAME_PLAYER_NUM, null);
     }
 
     public void setUserPoint(int points) {
@@ -55,13 +65,6 @@ public class SharedPrefManager {
         editor.putInt(KEY_POINTS, points);
         editor.apply();
     }
-
-//    public void setCurrentGameId(long id) {
-//        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putLong(KEY_CURRENT_GAME_ID, id);
-//        editor.apply();
-//    }
 
     public User getUser() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);

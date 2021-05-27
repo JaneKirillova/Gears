@@ -1,13 +1,13 @@
 package com.example.gears;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,13 +15,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.gears.GameObjects.Board;
 import com.example.gears.GameObjects.GameState;
 import com.example.gears.GameObjects.Gear;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,79 +28,46 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
-    private ArrayList<GearImage> gears = new ArrayList<>();
+    private final ArrayList<GearImage> gears = new ArrayList<>();
+    EventBus eventBus = EventBus.getDefault();
+    Button endTurn;
+    String currentPlayer;
     private GameState gameState;
-    private Board board;
+    private Board currentBoard;
     private Gson gson = new Gson();
-    private int activeGearNum = 0;
+    private int activeGearNum = -1;
+    String gameId;
+    Boolean needToAddToTurn = true;
 
-    private void getGame(boolean firstGetGame) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_GAME
-                + "?id=5327300496048938450&token=hello&currentPlayer=FIRSTPLAYER",
+
+    private void initBoard() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_INIT_BOARD + gameId + "/player/" + currentPlayer,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            if (firstGetGame) {
-                                EventBus.getDefault().post(new SuccessEventGetGameFirstTime(obj));
-                            } else {
-                                EventBus.getDefault().post(new SuccessEventGetGame(obj));
-                            }
-                        } catch (JSONException e) {
-                            System.out.print("ОШИБКА1: ");
-                            e.printStackTrace();
-                        }
+                        eventBus.post(new SuccessEventInitBoard());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        EventBus.getDefault().post(new ErrorEvent(error));
+                        eventBus.post(new ErrorEvent(error));
                     }
                 }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", "5327300496048938450");
-                params.put("token", "hello");
-                params.put("currentPlayer", "FIRSTPLAYER");
-                return params;
-            }
-        };
 
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-    }
-
-    private void updateGame(GameState gameStateToSend) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_UPDATE_GAME + "/5327300496048938450",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println(response);
-                        EventBus.getDefault().post(new SuccessEventUpdateGame());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        EventBus.getDefault().post(new ErrorEvent(error));
-
-                    }
-                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json");
-                params.put("userToken", "hello");
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("token", "hello");
                 return params;
             }
 
@@ -113,7 +78,101 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                JSONObject toReturn = null;
+                JSONObject toReturn;
+                try {
+                    toReturn = new JSONObject(gson.toJson(currentBoard));
+                    return toReturn.toString().getBytes("utf-8");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
+    private void getGame() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_GAME
+                + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            eventBus.post(new SuccessEventGetGame(obj));
+                        } catch (JSONException e) {
+                            System.out.print("ОШИБКА1: ");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        if (error.getError().toString())
+                        eventBus.post(new ErrorEvent(error));
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/json");
+                params.put("token", "hello");
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void updateGame(GameState gameStateToSend) {
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.SECONDPLAYER);
+        } else {
+            gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.FIRSTPLAYER);
+        }
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_UPDATE_GAME + "/" + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println(response);
+                        eventBus.post(new SuccessEventUpdateGame());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        eventBus.post(new ErrorEvent(error));
+
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json");
+                params.put("token", "hello");
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("currentPlayer", currentPlayer);
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                JSONObject toReturn;
                 try {
                     toReturn = new JSONObject(gson.toJson(gameStateToSend));
                     return toReturn.toString().getBytes("utf-8");
@@ -135,7 +194,23 @@ public class GameActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        currentBoard = new Board();
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            currentBoard.getPot().setDegree(240);
+        }
+        initGameState();
+        initBoard();
+//        rotateEx();
     }
+
+    public void rotateEx() {
+        List<Integer> degs = Arrays.asList(10);
+        activeGearNum = 0;
+        for (Integer degree: degs) {
+            rotateWithMonitoringBalls(degree);
+        }
+    }
+
 
     @Override
     protected void onStop() {
@@ -144,23 +219,42 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSuccessEventGetGameFirstTime(SuccessEventGetGameFirstTime event) {
-        gson = new Gson();
-        gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
-        gameState.setCurrentPlayer(GameState.CurrentPlayer.SECONDPLAYER);
-        updateGame(gameState);
+    public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
+        getGame();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventGetGame(SuccessEventGetGame event) {
         gson = new Gson();
         gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
-        updateGame(gameState);
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            currentBoard = gameState.getFirstPlayerBoard();
+        } else {
+            currentBoard = gameState.getSecondPlayerBoard();
+        }
+        for (int i = 0; i < currentBoard.getGears().size(); i++) {
+            gears.get(i).setGearWithHoles(currentBoard.getGears().get(i));
+        }
+
+
+
+        List<Integer> degreesFromTurn = gameState.getTurn().getDegree();
+        if (degreesFromTurn != null) {
+            needToAddToTurn = false;
+            activeGearNum = gameState.getTurn().getNumberOfActiveGear();
+            for (Integer degree : degreesFromTurn) {
+                rotateWithMonitoringBalls(degree);
+            }
+        }
+        needToAddToTurn = true;
+        activeGearNum = -1;
+        gameState.setTurn(gameState.new Turn());
+//        updateGame(gameState);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventUpdateGame(SuccessEventUpdateGame event) {
-        getGame(false);
+        getGame();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -169,240 +263,303 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-//        initGameState();
-//        getGame(true);
+        gameId = SharedPrefManager.getInstance(this).getGameId();
+//        gameId = "7594281976693506295";
+        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
+//        currentPlayer = "FIRSTPLAYER";
 
-            gears.add(new GearImage(1, 1));
-            gears.add(new GearImage(3, 2));
-            gears.add(new GearImage(2, 3));
-            gears.add(new GearImage(4, 4));
-            gears.add(new GearImage(5, 5));
-
-
-
-            for (GearImage gearImage: gears) {
-                if (gearImage.image == null) {
-                    gearImage.image = BitmapFactory.decodeResource(getResources(), R.drawable.gear);
-                    for (HoleImage holeIm : gearImage.holes) {
-                        holeIm.image = BitmapFactory.decodeResource(getResources(), R.drawable.hole);
-                        holeIm.ball.image = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
-                    }
-                }
+        gears.add(new GearImage(1, 1));
+        gears.add(new GearImage(3, 2));
+        gears.add(new GearImage(2, 3));
+        gears.add(new GearImage(4, 4));
+        gears.add(new GearImage(5, 5));
 
 
-                // initialize the matrix only once
-                if (gearImage.matrix == null) {
-                    gearImage.matrix = new Matrix();
-                    for (HoleImage holeIm : gearImage.holes) {
-                        holeIm.matrix = new Matrix();
-                        holeIm.ball.matrix = new Matrix();
-                    }
-                } else {
-                    gearImage.matrix.reset();
+
+        for (GearImage gearImage: gears) {
+            if (gearImage.image == null) {
+                gearImage.image = BitmapFactory.decodeResource(getResources(), R.drawable.gear);
+                for (HoleImage holeIm : gearImage.holes) {
+                    holeIm.image = BitmapFactory.decodeResource(getResources(), R.drawable.hole);
+                    holeIm.ball.image = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
                 }
             }
 
-            gears.get(0).dialer = (ImageView) findViewById(R.id.imageView_gear1);
-            gears.get(1).dialer = findViewById(R.id.imageView_gear2);
-            gears.get(2).dialer = findViewById(R.id.imageView_gear3);
-            gears.get(3).dialer = findViewById(R.id.imageView_gear4);
-            gears.get(4).dialer = findViewById(R.id.imageView_gear5);
 
-
-            gears.get(0).holes.get(0).dialer = findViewById(R.id.imageView_gear1_hole1);
-
-            gears.get(1).holes.get(0).dialer = findViewById(R.id.imageView_gear2_hole1);
-            gears.get(1).holes.get(1).dialer = findViewById(R.id.imageView_gear2_hole2);
-            gears.get(1).holes.get(2).dialer = findViewById(R.id.imageView_gear2_hole3);
-
-            gears.get(2).holes.get(0).dialer = findViewById(R.id.imageView_gear3_hole1);
-            gears.get(2).holes.get(1).dialer = findViewById(R.id.imageView_gear3_hole2);
-
-            gears.get(3).holes.get(0).dialer = findViewById(R.id.imageView_gear4_hole1);
-            gears.get(3).holes.get(1).dialer = findViewById(R.id.imageView_gear4_hole2);
-            gears.get(3).holes.get(2).dialer = findViewById(R.id.imageView_gear4_hole3);
-            gears.get(3).holes.get(3).dialer = findViewById(R.id.imageView_gear4_hole4);
-
-            gears.get(4).holes.get(0).dialer = findViewById(R.id.imageView_gear5_hole1);
-            gears.get(4).holes.get(1).dialer = findViewById(R.id.imageView_gear5_hole2);
-            gears.get(4).holes.get(2).dialer = findViewById(R.id.imageView_gear5_hole3);
-            gears.get(4).holes.get(3).dialer = findViewById(R.id.imageView_gear5_hole4);
-            gears.get(4).holes.get(4).dialer = findViewById(R.id.imageView_gear5_hole5);
-
-            gears.get(0).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear1_ball1);
-            gears.get(0).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
-
-
-            gears.get(1).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear2_ball1);
-            gears.get(1).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(1).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear2_ball2);
-            gears.get(1).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(1).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear2_ball3);
-            gears.get(1).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
-
-            gears.get(2).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear3_ball1);
-            gears.get(2).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(2).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear3_ball2);
-            gears.get(2).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
-
-
-            gears.get(3).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear4_ball1);
-            gears.get(3).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(3).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear4_ball2);
-            gears.get(3).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(3).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear4_ball3);
-            gears.get(3).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(3).holes.get(3).ball.dialer = findViewById(R.id.imageView_gear4_ball4);
-            gears.get(3).holes.get(3).ball.dialer.setVisibility(View.INVISIBLE);
-
-            gears.get(4).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear5_ball1);
-            gears.get(4).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(4).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear5_ball2);
-            gears.get(4).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(4).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear5_ball3);
-            gears.get(4).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(4).holes.get(3).ball.dialer = findViewById(R.id.imageView_gear5_ball4);
-            gears.get(4).holes.get(3).ball.dialer.setVisibility(View.INVISIBLE);
-            gears.get(4).holes.get(4).ball.dialer = findViewById(R.id.imageView_gear5_ball5);
-            gears.get(4).holes.get(4).ball.dialer.setVisibility(View.INVISIBLE);
-
-            gears.get(0).selectingButton = findViewById(R.id.button1);
-            gears.get(1).selectingButton = findViewById(R.id.button2);
-            gears.get(2).selectingButton = findViewById(R.id.button3);
-            gears.get(3).selectingButton = findViewById(R.id.button4);
-            gears.get(4).selectingButton = findViewById(R.id.button5);
-
-            for (int i = 0; i < gears.size(); i++) {
-                int finalI = i;
-                gears.get(i).selectingButton.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        activeGearNum = gears.get(finalI).gearNumber - 1;
-                    }
-                });
+            if (gearImage.matrix == null) {
+                gearImage.matrix = new Matrix();
+                for (HoleImage holeIm : gearImage.holes) {
+                    holeIm.matrix = new Matrix();
+                    holeIm.ball.matrix = new Matrix();
+                }
+            } else {
+                gearImage.matrix.reset();
+                 for (HoleImage holeIm : gearImage.holes) {
+                     holeIm.ball.matrix.reset();
+                 }
             }
+        }
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            initFirstPlayerScreen();
+        } else {
+            initFirstPlayerScreen();
+        }
 
-            int gearNumber = 0;
-            for (GearImage gear: gears) {
-                gear.dialer.setOnTouchListener(new MyOnTouchListener(gear, gearNumber));
-                gearNumber++;
-                gear.dialer.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                    if (gear.dialerHeight == 0 || gear.dialerWidth == 0) {
-                        gear.dialerHeight = gear.dialer.getHeight();
-                        gear.dialerWidth = gear.dialer.getWidth();
-                        gear.radius = gear.dialerHeight / 2;
-
-                        // resize
-                        Matrix resize = new Matrix();
-                        resize.postScale((float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getWidth(),
-                                (float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getHeight());
-
-                        gear.image = Bitmap.createBitmap(gear.image, 0, 0, gear.image.getWidth(), gear.image.getHeight(), resize, false);
-
-                        for (HoleImage holeIm : gear.holes) {
-                            holeIm.image = Bitmap.createScaledBitmap(holeIm.image, 150, 150, false);
-                            holeIm.ball.image = Bitmap.createScaledBitmap(holeIm.ball.image, 75, 75, false);
-                        }
-                        int i = 0;
-                        for (HoleImage holeIm : gear.holes) {
-                            if (i == 1) {
-                                System.out.println(10);
-                            }
-                            Map.Entry<Double, Double> entry = getDxDy(gear, holeIm);
-                            holeIm.matrix.setTranslate(entry.getKey().floatValue(), entry.getValue().floatValue());
-                            holeIm.ball.matrix.setTranslate(entry.getKey().floatValue() + 75 / 2, entry.getValue().floatValue() + 75);
-                            i++;
-                        }
-
-                        gear.dialer.setImageBitmap(gear.image);
-                        gear.dialer.setImageMatrix(gear.matrix);
-
-                        for (HoleImage holeIm : gear.holes) {
-                            holeIm.dialer.setImageBitmap(holeIm.image);
-                            holeIm.dialer.setImageMatrix(holeIm.matrix);
-                            holeIm.ball.dialer.setImageBitmap(holeIm.ball.image);
-                            holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
-                        }
-                    }
-                });
+        for (int i = 0; i < gears.size(); i++) {
+            int finalI = i;
+            gears.get(i).selectingButton.setOnClickListener(v -> {
+                if (activeGearNum != -1) {
+                    return;
+                }
+                activeGearNum = gears.get(finalI).gearNumber - 1;
+                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
+            });
+        }
+        endTurn = findViewById(R.id.end_turn);
+        endTurn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (activeGearNum == -1) {
+                    return;
+                }
+                activeGearNum = -1;
+                updateGame(gameState);
             }
-        initGameState();
+        });
+
+        setListeners();
     }
 
-    private Map.Entry<Double, Double> getDxDy( GearImage gear, HoleImage hole) {
-        Integer degree = hole.degree;
+    private void initFirstPlayerScreen() {
+        gears.get(0).dialer = findViewById(R.id.imageView_gear1);
+        gears.get(1).dialer = findViewById(R.id.imageView_gear2);
+        gears.get(2).dialer = findViewById(R.id.imageView_gear3);
+        gears.get(3).dialer = findViewById(R.id.imageView_gear4);
+        gears.get(4).dialer = findViewById(R.id.imageView_gear5);
+
+
+        gears.get(0).holes.get(0).dialer = findViewById(R.id.imageView_gear1_hole1);
+        gears.get(0).dialer.setVisibility(View.VISIBLE);
+
+
+        gears.get(1).holes.get(0).dialer = findViewById(R.id.imageView_gear2_hole1);
+        gears.get(1).holes.get(1).dialer = findViewById(R.id.imageView_gear2_hole2);
+        gears.get(1).holes.get(2).dialer = findViewById(R.id.imageView_gear2_hole3);
+
+
+        gears.get(2).holes.get(0).dialer = findViewById(R.id.imageView_gear3_hole1);
+        gears.get(2).holes.get(1).dialer = findViewById(R.id.imageView_gear3_hole2);
+
+        gears.get(3).holes.get(0).dialer = findViewById(R.id.imageView_gear4_hole1);
+        gears.get(3).holes.get(1).dialer = findViewById(R.id.imageView_gear4_hole2);
+        gears.get(3).holes.get(2).dialer = findViewById(R.id.imageView_gear4_hole3);
+        gears.get(3).holes.get(3).dialer = findViewById(R.id.imageView_gear4_hole4);
+
+        gears.get(4).holes.get(0).dialer = findViewById(R.id.imageView_gear5_hole1);
+        gears.get(4).holes.get(1).dialer = findViewById(R.id.imageView_gear5_hole2);
+        gears.get(4).holes.get(2).dialer = findViewById(R.id.imageView_gear5_hole3);
+        gears.get(4).holes.get(3).dialer = findViewById(R.id.imageView_gear5_hole4);
+        gears.get(4).holes.get(4).dialer = findViewById(R.id.imageView_gear5_hole5);
+
+        gears.get(0).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear1_ball1);
+        gears.get(0).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+
+
+        gears.get(1).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear2_ball1);
+        gears.get(1).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(1).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear2_ball2);
+        gears.get(1).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(1).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear2_ball3);
+        gears.get(1).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
+
+        gears.get(2).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear3_ball1);
+        gears.get(2).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(2).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear3_ball2);
+        gears.get(2).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
+
+
+        gears.get(3).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear4_ball1);
+        gears.get(3).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(3).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear4_ball2);
+        gears.get(3).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(3).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear4_ball3);
+        gears.get(3).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(3).holes.get(3).ball.dialer = findViewById(R.id.imageView_gear4_ball4);
+        gears.get(3).holes.get(3).ball.dialer.setVisibility(View.INVISIBLE);
+
+        gears.get(4).holes.get(0).ball.dialer = findViewById(R.id.imageView_gear5_ball1);
+        gears.get(4).holes.get(0).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(4).holes.get(1).ball.dialer = findViewById(R.id.imageView_gear5_ball2);
+        gears.get(4).holes.get(1).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(4).holes.get(2).ball.dialer = findViewById(R.id.imageView_gear5_ball3);
+        gears.get(4).holes.get(2).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(4).holes.get(3).ball.dialer = findViewById(R.id.imageView_gear5_ball4);
+        gears.get(4).holes.get(3).ball.dialer.setVisibility(View.INVISIBLE);
+        gears.get(4).holes.get(4).ball.dialer = findViewById(R.id.imageView_gear5_ball5);
+        gears.get(4).holes.get(4).ball.dialer.setVisibility(View.INVISIBLE);
+
+        gears.get(0).selectingButton = findViewById(R.id.button1);
+        gears.get(1).selectingButton = findViewById(R.id.button2);
+        gears.get(2).selectingButton = findViewById(R.id.button3);
+        gears.get(3).selectingButton = findViewById(R.id.button4);
+        gears.get(4).selectingButton = findViewById(R.id.button5);
+    }
+
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setListeners() {
+        int gearNumber = 0;
+        for (GearImage gear: gears) {
+            gear.dialer.setOnTouchListener(new MyOnTouchListener(gear, gearNumber));
+            gearNumber++;
+            gear.dialer.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                if (gear.dialerHeight == 0 || gear.dialerWidth == 0) {
+                    gear.dialerHeight = gear.dialer.getHeight();
+                    gear.dialerWidth = gear.dialer.getWidth();
+                    gear.radius = gear.dialerHeight / 2;
+                    gear.gear.setRadius(gear.radius);
+                    gear.gear.setXY((int)gear.dialer.getX(), (int)gear.dialer.getY());
+
+
+                    Matrix resize = new Matrix();
+                    resize.postScale((float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getWidth(),
+                            (float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getHeight());
+
+                    gear.image = Bitmap.createBitmap(gear.image, 0, 0, gear.image.getWidth(), gear.image.getHeight(), resize, false);
+
+                    for (HoleImage holeIm : gear.holes) {
+                        holeIm.image = Bitmap.createScaledBitmap(holeIm.image, 150, 75, false);
+                        holeIm.ball.image = Bitmap.createScaledBitmap(holeIm.ball.image, 75, 75, false);
+                    }
+
+                    gear.dialer.setImageBitmap(gear.image);
+                    gear.dialer.setImageMatrix(gear.matrix);
+
+                    for (HoleImage holeIm : gear.holes) {
+                        holeIm.dialer.setImageBitmap(holeIm.image);
+                        holeIm.dialer.setImageMatrix(holeIm.matrix);
+                        holeIm.ball.dialer.setImageBitmap(holeIm.ball.image);
+                        holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
+                    }
+
+                    for (HoleImage holeIm : gear.holes) {
+                        Map.Entry<Double, Double> entry = getDxDyForHoles(gear, holeIm);
+                        holeIm.matrix.postRotate(holeIm.degree, 150 / 2, 0);
+                        holeIm.dialer.setImageMatrix(holeIm.matrix);
+                        holeIm.matrix.postTranslate(entry.getKey().floatValue(), entry.getValue().floatValue());
+                        holeIm.dialer.setImageMatrix(holeIm.matrix);
+                        entry = getDxDyForBalls(gear, holeIm);
+
+                        holeIm.ball.matrix.setTranslate(entry.getKey().floatValue(), entry.getValue().floatValue());
+                        holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
+                    }
+                }
+            });
+            gear.dialer.requestLayout();
+        }
+
+    }
+
+
+    private Map.Entry<Double, Double> getDxDyForBalls(GearImage gear, HoleImage hole) {
+        int degree = hole.degree;
+        if (degree == 0) {
+            return new AbstractMap.SimpleEntry<>(gear.radius + gear.radius* Math.sin(Math.toRadians(degree)) - hole.ball.image.getWidth() / 2,
+                    gear.radius - (gear.radius) * Math.cos(Math.toRadians(degree)));
+        }
+
+        if (degree == 180) {
+            return new AbstractMap.SimpleEntry<>(gear.radius + gear.radius* Math.sin(Math.toRadians(degree)) - hole.ball.image.getWidth() / 2,
+                    gear.radius - (gear.radius) * Math.cos(Math.toRadians(degree)) - hole.ball.image.getWidth());
+        }
+
         if (degree <= 90) {
-            Double dx = gear.radius + gear.radius * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius - gear.radius * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dx = gear.radius + gear.radius* Math.sin(Math.toRadians(degree)) - hole.ball.image.getWidth();
+            Double dy = gear.radius - (gear.radius) * Math.cos(Math.toRadians(degree)) - hole.ball.image.getWidth() / 2;
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         if (degree <= 180) {
             degree -= 90;
-            Double dx = gear.radius + gear.radius * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius + gear.radius * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dx = gear.radius + gear.radius * Math.cos(Math.toRadians(degree)) - hole.ball.image.getWidth();
+            Double dy = gear.radius + gear.radius * Math.sin(Math.toRadians(degree)) - hole.ball.image.getWidth();
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
-        if (degree <= 270) {
+        if (degree < 270) {
             degree -= 180;
-            Double dx = gear.radius - gear.radius * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius + gear.radius * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dx = gear.radius - gear.radius * Math.sin(Math.toRadians(degree));
+            Double dy = gear.radius + gear.radius * Math.cos(Math.toRadians(degree)) - hole.ball.image.getWidth();
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         degree -= 270;
-        Double dx = gear.radius - gear.radius * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-        Double dy = gear.radius - gear.radius * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+        Double dx = gear.radius - gear.radius * Math.cos(Math.toRadians(degree));
+        Double dy = gear.radius - gear.radius * Math.sin(Math.toRadians(degree)) - hole.ball.image.getWidth() / 2;
         return new AbstractMap.SimpleEntry<>(dx, dy);
     }
 
+    private Map.Entry<Double, Double> getDxDyForHoles(GearImage gear, HoleImage hole) {
+        int degree = hole.degree;
+        if (degree <= 90) {
+            Double dx = gear.radius + (gear.radius - 5) * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius - (gear.radius - 5) * Math.cos(Math.toRadians(degree));
+            return new AbstractMap.SimpleEntry<>(dx, dy);
+        }
+
+        if (degree <= 180) {
+            degree -= 90;
+            Double dx = gear.radius + (gear.radius - 5) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius - 5) * Math.sin(Math.toRadians(degree));
+            return new AbstractMap.SimpleEntry<>(dx, dy);
+        }
+        if (degree <= 270) {
+            degree -= 180;
+            Double dx = gear.radius - (gear.radius - 5) * Math.sin(Math.toRadians(degree))- hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius - 5) * Math.cos(Math.toRadians(degree));
+            return new AbstractMap.SimpleEntry<>(dx, dy);
+        }
+
+        degree -= 270;
+        Double dx = gear.radius - (gear.radius - 5) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+        Double dy = gear.radius - (gear.radius - 5) * Math.sin(Math.toRadians(degree));
+        return new AbstractMap.SimpleEntry<>(dx, dy);
+    }
 
     private void initGameState() {
-        gameState = new GameState();
         List<Gear> gearsToAddToBoard = new ArrayList<>();
         int gearNum = 1;
         for (GearImage gearImage: gears) {
-            int[] posXY = new int[2];
-            gearImage.dialer.getLocationOnScreen(posXY);
-            if (gearNum == 1) {
-                System.out.println("p");
-            }
             Gear newGear = new Gear(gearImage.getHolesNumber(), gearNum == 5, gearNum == 1,
-                    posXY[0] + gearImage.dialer.getLayoutParams().width / 2,
-                    posXY[1] + gearImage.dialer.getLayoutParams().height / 2,
-                    gearImage.dialer.getLayoutParams().height / 2,
                     GearImage.getDownNeighborsList(gearNum), GearImage.getUpperNeighborsList(gearNum));
+            newGear.setRadius((float) gearImage.dialer.getLayoutParams().height / 2);
             gearsToAddToBoard.add(newGear);
             gearImage.setGear(newGear);
             gearImage.setNeighbours(newGear.getUpperNeighbours(), newGear.getDownNeighbours());
             gearImage.setHoles();
+            gearImage.gear.setXY((int)gearImage.dialer.getX(), (int)gearImage.dialer.getY());
             gearNum++;
         }
-        gameState.getFirstPlayerBoard().setGears(gearsToAddToBoard);
-        gameState.getFirstPlayerBoard().getGears().get(0).setXY(540, 183);
-        gameState.getFirstPlayerBoard().getGears().get(1).setXY(141, 401);
-        gameState.getFirstPlayerBoard().getGears().get(2).setXY(559, 698);
-        gameState.getFirstPlayerBoard().getGears().get(3).setXY(0, 821);
-        gameState.getFirstPlayerBoard().getGears().get(4).setXY(417, 1060);
 
-        board = gameState.getFirstPlayerBoard();
+        currentBoard.setGears(gearsToAddToBoard);
+//        currentBoard.getGears().get(0).setXY(540, 183);
+//        currentBoard.getGears().get(1).setXY(178, 391);
+//        currentBoard.getGears().get(2).setXY(535, 637);
+//        currentBoard.getGears().get(3).setXY(55, 792);
+//        currentBoard.getGears().get(4).setXY(438, 992);
+
+
+//        currentBoard = gameState.getFirstPlayerBoard();
     }
 
     private class MyOnTouchListener implements View.OnTouchListener {
-        private int gearNum;
-
+        private final int gearNum;
         private double startAngle;
-        private double startX;
-        private double startY;
-        private GearImage gearImage;
-        double accumulator = 0;
+        private final GearImage gearImage;
 
         public MyOnTouchListener(GearImage gearImage, int gearNum) {
             this.gearImage = gearImage;
@@ -418,71 +575,25 @@ public class GameActivity extends AppCompatActivity {
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN: // начало действия
-                    startX = event.getX();
-                    startY = event.getY();
                     startAngle = getAngle(event.getX(), event.getY());
                     break;
 
                 case MotionEvent.ACTION_MOVE: // произошло изменение в активом действии
                     double currentAngle = getAngle(event.getX(), event.getY());
-                    if (Math.abs(currentAngle - startAngle) < 3 || Math.abs(currentAngle - startAngle) > 300) {
+                    if (Math.abs(currentAngle - startAngle) < 3) {
                         return true;
                     }
-                    System.out.println("!!!!!!!!! st: " + startAngle + " cur: " + currentAngle + " dir " + getDirection(startX, startY, event.getX(), event.getY()));
 
+                    double angleToRotate = startAngle - currentAngle;
+                    if (0 <= startAngle && startAngle <= 90 && 270 <= currentAngle && currentAngle <= 360) {
+                        angleToRotate += 360;
+                    }
+
+                    if (0 <= currentAngle && currentAngle <= 90 && 270 <= startAngle && startAngle <= 360) {
+                        angleToRotate -= 360;
+                    }
+                    rotateWithMonitoringBalls((float) angleToRotate);
                     startAngle = currentAngle;
-                    startX = event.getX();
-                    startY = event.getY();
-                    boolean isClockDirection = getDirection(startX, startY, event.getX(), event.getY());
-                    if (!isClockDirection) {
-                    System.out.println("ЦВЕТОЧКИ");
-                    getDirection(startX, startY, event.getX(), event.getY());
-                }
-//                    double currentAngle = getAngle(event.getX(), event.getY());
-                    if (startAngle - currentAngle < 0) {
-                        System.out.println("kkk");
-                    }
-                    double anglesDelta = startAngle - currentAngle;
-                    if (anglesDelta < 0) {
-                        System.out.println("cc");
-                    }
-
-                    if (isClockDirection) {
-                        if (startAngle < currentAngle) {
-                            anglesDelta = startAngle + 360 - currentAngle;
-                        } else {
-                            anglesDelta = Math.abs(anglesDelta);
-                        }
-                    } else {
-                        if (startAngle > currentAngle) {
-                            anglesDelta = - (360 - startAngle + currentAngle);
-                        } else {
-                            anglesDelta = -Math.abs(anglesDelta);
-                        }
-                    }
-                    if (anglesDelta > 180) {
-                        System.out.println("[[[[[[[[[[[");
-                    }
-
-
-                    accumulator += anglesDelta;
-                    startAngle = currentAngle;
-                    startX = event.getX();
-                    startY = event.getY();
-                    if (Math.abs(accumulator) < 5) {
-                        break;
-                    }
-
-                    System.out.println("ROTATEROTATEROTATEROTATEROTATE" + (startAngle - currentAngle) + "ROTATEROTATEROTATEROTATEROTATE");
-                    if (event.getHistorySize() > 10) {
-                        System.out.println("x");
-                    }
-//                    if (accumulator > )
-                    rotateWithMonitoringBalls((float) (accumulator));
-                    accumulator = 0;
-//                    startAngle = currentAngle;
-//                    startX = event.getX();
-//                    startY = event.getY();
                     break;
 
 
@@ -492,54 +603,6 @@ public class GameActivity extends AppCompatActivity {
             }
 
             return true;
-        }
-
-        private boolean getDirection(double startX, double startY, double newX, double newY) {
-            double relativeToGearCenterStartX = startX - (gearImage.dialerWidth / 2d);
-
-            double relativeToGearCenterStartY = gearImage.dialerHeight - startY - (gearImage.dialerHeight / 2d);
-
-            double relativeToGearCenterNewX = newX - (gearImage.dialerWidth / 2d);
-            double relativeToGearCenterNewY = gearImage.dialerHeight - newY - (gearImage.dialerHeight / 2d);
-
-            int quadrantStartXY = getQuadrant(relativeToGearCenterStartX, relativeToGearCenterStartY);
-            int quadrantNewXY = getQuadrant(relativeToGearCenterNewX, relativeToGearCenterNewY);
-            if (quadrantStartXY == quadrantNewXY) {
-                if (quadrantStartXY == 1)  {
-                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
-                        return relativeToGearCenterNewX - relativeToGearCenterStartX > 0;
-                    }
-                    return relativeToGearCenterNewY - relativeToGearCenterStartY >= 0;
-                }
-                if (quadrantStartXY == 2) {
-                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
-                        return relativeToGearCenterNewX - relativeToGearCenterStartX > 0;
-                    }
-                    return relativeToGearCenterNewY - relativeToGearCenterStartY <= 0;
-                }
-
-                if (quadrantStartXY == 4) {
-                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
-                        return relativeToGearCenterNewX - relativeToGearCenterStartX < 0;
-                    }
-                    return relativeToGearCenterNewY - relativeToGearCenterStartY >= 0;
-                }
-                if (quadrantNewXY == 3) {
-                    if (relativeToGearCenterNewX - relativeToGearCenterStartX != 0) {
-                        return relativeToGearCenterNewX - relativeToGearCenterStartX < 0;
-                    }
-                    return relativeToGearCenterNewY - relativeToGearCenterStartY <= 0;
-                }
-            }
-
-
-            if (quadrantStartXY == 4 && quadrantNewXY == 1) {
-                return false;
-            }
-            if (quadrantStartXY > quadrantNewXY || (quadrantStartXY == 1 && quadrantNewXY == 4)) {
-                return true;
-            }
-            return false;
         }
 
         private double getAngle(double xTouch, double yTouch) {
@@ -567,99 +630,64 @@ public class GameActivity extends AppCompatActivity {
                 return y >= 0 ? 2 : 3;
             }
         }
+    }
 
-        private void rotateDialer(float degrees) {
-            gearImage.matrix.postRotate(degrees, gearImage.dialerWidth / 2, gearImage.dialerHeight / 2);
-            gearImage.dialer.setImageMatrix(gearImage.matrix);
 
-            for (HoleImage holeIm : gearImage.holes) {
-                holeIm.matrix.postRotate(degrees, gearImage.dialerWidth / 2, gearImage.dialerHeight / 2);
-                holeIm.dialer.setImageMatrix(holeIm.matrix);
-                holeIm.ball.matrix.postRotate(degrees, gearImage.dialerWidth / 2, gearImage.dialerHeight / 2);
-                holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
+
+    private void rotateDialer(GearImage gearImage, float degrees) {
+        gearImage.matrix.postRotate(degrees, gearImage.gear.getRadius(), gearImage.gear.getRadius());
+        gearImage.dialer.setImageMatrix(gearImage.matrix);
+
+        for (HoleImage holeIm : gearImage.holes) {
+            holeIm.matrix.postRotate(degrees, gearImage.gear.getRadius(), gearImage.gear.getRadius());
+            holeIm.dialer.setImageMatrix(holeIm.matrix);
+            holeIm.ball.matrix.postRotate(degrees, gearImage.gear.getRadius(), gearImage.gear.getRadius());
+            holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
+        }
+    }
+
+
+    private void rotateWithMonitoringBalls(float degree) {
+//        System.out.println("!!!!!!!! deg: " + gears.get(4).gear.getDegree() + "  !!!!!!!!");
+        System.out.println("!!!!!!! " + gears.get(0).gear.getDegree() + " " + gears.get(1).gear.getDegree() + " "
+                + gears.get(2).gear.getDegree() + " " + gears.get(3).gear.getDegree() + " " + gears.get(4).gear.getDegree() + " !!!!!!!!!!!!!!!!!!!");
+        double step = 2.5;
+        if (degree < 0) {
+            step *= -1;
+        }
+        for (int i = 0; i < (int) (Math.abs(degree) / Math.abs(step)); i++) {
+            gears.get(activeGearNum).accumulatedAngle = gears.get(activeGearNum).accumulatedAngle + step;
+            rotateDialer(gears.get(activeGearNum), (float) step);
+            if (step > 0 && (gears.get(activeGearNum).accumulatedAngle == 10)) {
+                redraw(10);
+                gears.get(activeGearNum).accumulatedAngle = 0;
+            }
+            if (step < 0 && (gears.get(activeGearNum).accumulatedAngle == -10)) {
+                redraw(-10);
+                gears.get(activeGearNum).accumulatedAngle = 0;
             }
         }
+    }
 
+    private void redraw(int degree) {
+        if (needToAddToTurn) {
+            gameState.getTurn().addDegreeToArrayDegree(degree);
+        }
+        currentBoard.rebuild(degree, activeGearNum);
 
-        private void rotateWithMonitoringBalls(float degree) {
-            System.out.print("!!!!!rotate " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
-            for(int i = 0; i < 3; i++) {
-                Gear.Hole hole = gameState.getFirstPlayerBoard().getGears().get(1).getHoles().get(i);
-                String s;
-                if (hole.isFree()) {
-                    s = "free";
+        List<Integer> allGearsToRedraw = new ArrayList<>();
+        allGearsToRedraw.add(activeGearNum);
+        allGearsToRedraw.addAll(gears.get(activeGearNum).getUpperNeighbours());
+        allGearsToRedraw.addAll(gears.get(activeGearNum).getDownNeighbours());
+        for (Integer gearNumber : allGearsToRedraw) {
+            GearImage gearImage = gears.get(gearNumber);
+            for (HoleImage holeImage : gearImage.getHoles()) {
+                if (holeImage.hole.isFree()) {
+                    holeImage.ball.dialer.setVisibility(View.INVISIBLE);
                 } else {
-                    s = "not free";
-                }
-                System.out.print(i + " " + hole.getDegree() + " " + s + " ");
-            }
-            System.out.println(" !!!!");
-//            System.out.println("!!!!!!!!!!  right deg: " + gearImage.gear.getHoles().get(0).getDegree() + "   !!!!!!!!!!!!!!!!!!!!!!!!!111");
-                double step = 2.5;
-                if (degree < 0) {
-                    step *= -1;
-                }
-                if (degree > 360) {
-                    System.out.println("aaa");
-                }
-                for (int i = 0; i < (int) (Math.abs(degree) / Math.abs(step)); i++) {
-                    gears.get(activeGearNum).accumulatedAngle = gears.get(activeGearNum).accumulatedAngle + step;
-                    rotateDialer((float) step);
-                    if (step > 0 && (gears.get(activeGearNum).accumulatedAngle == 10)) {
-                        redraw(10);
-                        gears.get(activeGearNum).accumulatedAngle = 0;
-                    }
-                    if (step < 0 && (gears.get(activeGearNum).accumulatedAngle == -10)) {
-                        redraw(-10);
-                        gears.get(activeGearNum).accumulatedAngle = 0;
-                    }
+                    holeImage.ball.dialer.setVisibility(View.VISIBLE);
                 }
             }
         }
-
-        private void redraw(int degree) {
-            System.out.print("!!!!!redraw " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
-            for (Gear.Hole hole : gameState.getFirstPlayerBoard().getGears().get(1).getHoles()) {
-                String s;
-                if (hole.isFree()) {
-                    s = "free";
-                } else {
-                    s = "not free";
-                }
-                System.out.print(hole.getDegree() + " " + s + " ");
-
-            }
-
-            System.out.println(" !!!!");
-
-            if (gameState.getFirstPlayerBoard().getGears().get(0).getDegree() == 50) {
-                System.out.println("o");
-            }
-            board.rebuild(degree, activeGearNum);
-
-            List<Integer> allGearsToRedraw = new ArrayList<>();
-            allGearsToRedraw.add(activeGearNum);
-            allGearsToRedraw.addAll(gears.get(activeGearNum).getUpperNeighbours());
-            allGearsToRedraw.addAll(gears.get(activeGearNum).getDownNeighbours());
-            for (Integer gearNumber : allGearsToRedraw) {
-                GearImage gearImage = gears.get(gearNumber);
-                for (HoleImage holeImage : gearImage.getHoles()) {
-                    if (holeImage.hole.isFree()) {
-                        System.out.print("!!!!!inwvisibl " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " " + gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
-                        for (Gear.Hole hole1 : gameState.getFirstPlayerBoard().getGears().get(1).getHoles()) {
-                            System.out.print(hole1.getDegree() + " " + "free ");
-                        }
-                        System.out.println(" !!!!");
-                        holeImage.ball.dialer.setVisibility(View.INVISIBLE);
-                    } else {
-                        System.out.print("!!!!!visibl " + gameState.getFirstPlayerBoard().getGears().get(0).getDegree() + " "+ gameState.getFirstPlayerBoard().getGears().get(1).getDegree() + " ");
-                        for (Gear.Hole hole1 : gameState.getFirstPlayerBoard().getGears().get(0).getHoles()) {
-                            System.out.print(hole1.getDegree() + " " + "not free ");
-                        }
-                        System.out.println(" !!!!");
-                        holeImage.ball.dialer.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        }
+    }
 }
