@@ -44,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
     private GameState gameState;
     private Board currentBoard;
     private Gson gson = new Gson();
-    private int activeGearNum = -1;
+    private int activeGearNum = -2;
     String gameId;
     Boolean needToAddToTurn = true;
 
@@ -131,6 +131,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateGame(GameState gameStateToSend) {
+        activeGearNum = -2;
         if (currentPlayer.equals("FIRSTPLAYER")) {
             gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.SECONDPLAYER);
         } else {
@@ -250,7 +251,6 @@ public class GameActivity extends AppCompatActivity {
         needToAddToTurn = true;
         activeGearNum = -1;
         gameState.setTurn(gameState.new Turn());
-//        updateGame(gameState);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
