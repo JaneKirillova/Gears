@@ -3,12 +3,19 @@ package com.example.gears;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
     private int activeGearNum = -2;
     String gameId;
     Boolean needToAddToTurn = true;
+    int numberOfDrownGears = 0;
 
 
     private void initBoard() {
@@ -200,8 +208,7 @@ public class GameActivity extends AppCompatActivity {
         if (currentPlayer.equals("FIRSTPLAYER")) {
             currentBoard.getPot().setDegree(240);
         }
-        initGameState();
-        initBoard();
+
 //        rotateEx();
     }
 
@@ -213,6 +220,14 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initGameState();
+        setListeners();
+//        initBoard();
+    }
 
     @Override
     protected void onStop() {
@@ -304,6 +319,7 @@ public class GameActivity extends AppCompatActivity {
                  }
             }
         }
+
         if (currentPlayer.equals("FIRSTPLAYER")) {
             initFirstPlayerScreen();
         } else {
@@ -332,15 +348,16 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        setListeners();
+
+        activeGearNum = -1;
     }
 
     private void initFirstPlayerScreen() {
-        gears.get(0).dialer = findViewById(R.id.imageView_gear1);
-        gears.get(1).dialer = findViewById(R.id.imageView_gear2);
-        gears.get(2).dialer = findViewById(R.id.imageView_gear3);
-        gears.get(3).dialer = findViewById(R.id.imageView_gear4);
-        gears.get(4).dialer = findViewById(R.id.imageView_gear5);
+        gears.get(0).dialer = (ImageView) findViewById(R.id.imageView_gear1);
+        gears.get(1).dialer = (ImageView) findViewById(R.id.imageView_gear2);
+        gears.get(2).dialer = (ImageView) findViewById(R.id.imageView_gear3);
+        gears.get(3).dialer = (ImageView) findViewById(R.id.imageView_gear4);
+        gears.get(4).dialer = (ImageView) findViewById(R.id.imageView_gear5);
 
 
         gears.get(0).holes.get(0).dialer = findViewById(R.id.imageView_gear1_hole1);
@@ -418,13 +435,17 @@ public class GameActivity extends AppCompatActivity {
         for (GearImage gear: gears) {
             gear.dialer.setOnTouchListener(new MyOnTouchListener(gear, gearNumber));
             gearNumber++;
+
             gear.dialer.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
                 if (gear.dialerHeight == 0 || gear.dialerWidth == 0) {
+                    numberOfDrownGears++;
                     gear.dialerHeight = gear.dialer.getHeight();
                     gear.dialerWidth = gear.dialer.getWidth();
                     gear.radius = gear.dialerHeight / 2;
                     gear.gear.setRadius(gear.radius);
                     gear.gear.setXY((int)gear.dialer.getX(), (int)gear.dialer.getY());
+
+                    System.out.println("!!!!!! " + gear.dialer.getLeft() + " " + gear.dialer.getTop() + " !!!!!!!!");
 
 
                     Matrix resize = new Matrix();
@@ -459,9 +480,11 @@ public class GameActivity extends AppCompatActivity {
                         holeIm.ball.matrix.setTranslate(entry.getKey().floatValue(), entry.getValue().floatValue());
                         holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
                     }
+                    if (numberOfDrownGears == 5) {
+                        initBoard();
+                    }
                 }
             });
-            gear.dialer.requestLayout();
         }
 
     }
@@ -543,7 +566,7 @@ public class GameActivity extends AppCompatActivity {
             gearImage.setGear(newGear);
             gearImage.setNeighbours(newGear.getUpperNeighbours(), newGear.getDownNeighbours());
             gearImage.setHoles();
-            gearImage.gear.setXY((int)gearImage.dialer.getX(), (int)gearImage.dialer.getY());
+//            gearImage.gear.setXY((int)gearImage.dialer.getX(), (int)gearImage.dialer.getY());
             gearNum++;
         }
 
@@ -559,18 +582,49 @@ public class GameActivity extends AppCompatActivity {
 //        currentBoard = gameState.getFirstPlayerBoard();
     }
 
+
+    public int getScreenWidth() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        } else {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.widthPixels;
+        }
+    }
+
+    public int doToPixel(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
+
+    public int pixelToDP(int px) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
+    }
+
     private void setCoordinates() {
         Display display = getWindowManager().getDefaultDisplay();
-        int width = display.getWidth();  // deprecated
+        int width = getScreenWidth();
         int height = display.getHeight();
         int relativeWidth = 412;
         int relativeHeight = 791;
 
-        currentBoard.getGears().get(0).setXY(width * 206/ relativeWidth, height * 70 / relativeHeight);
-        currentBoard.getGears().get(1).setXY(width * 68/ relativeWidth, height * 149 / relativeHeight);
-        currentBoard.getGears().get(2).setXY(width * 204/ relativeWidth, height * 243 / relativeHeight);
-        currentBoard.getGears().get(3).setXY(width * 21/ relativeWidth, height * 302 / relativeHeight);
-        currentBoard.getGears().get(4).setXY(width * 167/ relativeWidth, height * 378 / relativeHeight);
+        int dp1 = doToPixel(206);
+        int dp2 = doToPixel(70);
+        int dp3 = doToPixel(68);
+
+//        currentBoard.getGears().get(0).setXY(width * 206/ relativeWidth, height * 70 / relativeHeight);
+//        currentBoard.getGears().get(1).setXY(width * 68/ relativeWidth, height * 149 / relativeHeight);
+//        currentBoard.getGears().get(2).setXY(width * 204/ relativeWidth, height * 243 / relativeHeight);
+//        currentBoard.getGears().get(3).setXY(width * 21/ relativeWidth, height * 302 / relativeHeight);
+//        currentBoard.getGears().get(4).setXY(width * 167/ relativeWidth, height * 378 / relativeHeight);
     }
 
 
