@@ -208,8 +208,6 @@ public class GameActivity extends AppCompatActivity {
         if (currentPlayer.equals("FIRSTPLAYER")) {
             currentBoard.getPot().setDegree(240);
         }
-
-//        rotateEx();
     }
 
     public void rotateEx() {
@@ -340,14 +338,13 @@ public class GameActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (activeGearNum == -1) {
+                if (activeGearNum < 0) {
                     return;
                 }
                 activeGearNum = -1;
                 updateGame(gameState);
             }
         });
-
 
         activeGearNum = -1;
     }
@@ -566,66 +563,13 @@ public class GameActivity extends AppCompatActivity {
             gearImage.setGear(newGear);
             gearImage.setNeighbours(newGear.getUpperNeighbours(), newGear.getDownNeighbours());
             gearImage.setHoles();
-//            gearImage.gear.setXY((int)gearImage.dialer.getX(), (int)gearImage.dialer.getY());
             gearNum++;
         }
 
         currentBoard.setGears(gearsToAddToBoard);
-        setCoordinates();
-//        currentBoard.getGears().get(0).setXY(540, 183);
-//        currentBoard.getGears().get(1).setXY(178, 391);
-//        currentBoard.getGears().get(2).setXY(535, 637);
-//        currentBoard.getGears().get(3).setXY(55, 792);
-//        currentBoard.getGears().get(4).setXY(438, 992);
-
-
-//        currentBoard = gameState.getFirstPlayerBoard();
     }
 
 
-    public int getScreenWidth() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
-            Insets insets = windowMetrics.getWindowInsets()
-                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
-            return windowMetrics.getBounds().width() - insets.left - insets.right;
-        } else {
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            return displayMetrics.widthPixels;
-        }
-    }
-
-    public int doToPixel(int dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-
-    public int pixelToDP(int px) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
-    }
-
-    private void setCoordinates() {
-        Display display = getWindowManager().getDefaultDisplay();
-        int width = getScreenWidth();
-        int height = display.getHeight();
-        int relativeWidth = 412;
-        int relativeHeight = 791;
-
-        int dp1 = doToPixel(206);
-        int dp2 = doToPixel(70);
-        int dp3 = doToPixel(68);
-
-//        currentBoard.getGears().get(0).setXY(width * 206/ relativeWidth, height * 70 / relativeHeight);
-//        currentBoard.getGears().get(1).setXY(width * 68/ relativeWidth, height * 149 / relativeHeight);
-//        currentBoard.getGears().get(2).setXY(width * 204/ relativeWidth, height * 243 / relativeHeight);
-//        currentBoard.getGears().get(3).setXY(width * 21/ relativeWidth, height * 302 / relativeHeight);
-//        currentBoard.getGears().get(4).setXY(width * 167/ relativeWidth, height * 378 / relativeHeight);
-    }
 
 
 
