@@ -16,7 +16,7 @@ public class Board {
         this.gears = other.gears;
         this.rightGutter = other.rightGutter;
         this.leftGutter = other.leftGutter;
-        this.pot = other.pot;
+        this.pot = new Pot(other.pot);
         List<Gear> newGears = new ArrayList<>();
         for (Gear gear: other.gears) {
             newGears.add(new Gear(gear));
@@ -110,7 +110,7 @@ public class Board {
                     this.getPot().setHowManyBalls(getPot().getHowManyBalls() + holeOfChangingGear.getCapacity());
                     holeOfChangingGear.setFree(true);
 
-                    changingGear.getHoles().set(holeOfChangingGear.getNumberOfHole(), holeOfChangingGear);
+//                    changingGear.getHoles().set(holeOfChangingGear.getNumberOfHole(), holeOfChangingGear);
                 }
             }
             List<Gear> arrayOfGears = this.getGears();
@@ -171,12 +171,17 @@ public class Board {
     }
 
     public class Gutter {
-        public Gutter() {
+        public Gutter() { }
+
+        public Gutter(Gutter other) {
+            this.degree = other.degree;
+            this.howManyBalls = other.howManyBalls;
+            this.howManyBallsStart = other.howManyBallsStart;
         }
 
         private int degree = 60;
         private int howManyBalls = 1;
-        private final int howManyBallsStart = 1;
+        private int howManyBallsStart = 1;
 
         public Gutter(int degree) {
             this.degree = degree;
@@ -204,7 +209,11 @@ public class Board {
     }
 
     public class Pot {
-        public Pot() {
+        public Pot() { }
+
+        public Pot(Pot other) {
+            this.degree = other.degree;
+            this.howManyBalls = other.howManyBalls;
         }
 
         private int degree = 120;

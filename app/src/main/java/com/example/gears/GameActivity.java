@@ -207,7 +207,7 @@ public class GameActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json");
-                params.put("token", "hello");
+                params.put("token", token);
                 return params;
             }
 
@@ -343,11 +343,11 @@ public class GameActivity extends AppCompatActivity {
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
         token = SharedPrefManager.getInstance(this).getToken();
 
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+//        if (currentPlayer.equals("FIRSTPLAYER")) {
             setContentView(R.layout.activity_game_field1);
-        } else {
-            setContentView(R.layout.activity_game_field2);
-        }
+//        } else {
+//            setContentView(R.layout.activity_game_field2);
+//        }
         gameId = SharedPrefManager.getInstance(this).getGameId();
 //        gameId = "7594281976693506295";
 //        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();

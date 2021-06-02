@@ -58,7 +58,7 @@ public class PersonalAccountActivity extends AppCompatActivity {
 
 
                             User newUser = new User(
-                                    obj.getString("token"),
+                                    oldUser.getToken(),
                                     obj.getString("username"),
                                     obj.getString("password"),
                                     obj.getLong("id"),
@@ -170,7 +170,7 @@ public class PersonalAccountActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", "Ilya");
+                params.put("username", user.getUsername());
                 return params;
             }
 
@@ -178,7 +178,7 @@ public class PersonalAccountActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 //                params.put("Content-Type", "application/json");
-                params.put("token", "hello");
+                params.put("token", user.getToken());
                 return params;
             }
         };
