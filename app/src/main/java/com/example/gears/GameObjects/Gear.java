@@ -12,6 +12,26 @@ public class Gear {
 
     public Gear() {}
 
+    public Gear(Gear other) {
+        this.isLast = other.isLast;
+        this.isLast = other.isLast;
+        this.radius = other.radius;
+        this.degree = other.degree;
+        this.numberOfHoles = other.numberOfHoles;
+        this.downNeighbours = other.downNeighbours;
+        this.upperNeighbours = other.upperNeighbours;
+        this.x = other.x;
+        this.y = other.y;
+        List<Hole> newHoles = new ArrayList<>();
+        for (Hole hole: other.holes) {
+            newHoles.add(new Hole(hole));
+        }
+        this.holes = newHoles;
+
+
+
+    }
+
     public void setIsLast(boolean bool) {
         this.isLast = bool;
     }
@@ -112,8 +132,13 @@ public class Gear {
         private int numberOfBall;
         private int numberOfHole;
 
-        public Hole() {
-
+        public Hole() { }
+        public Hole(Hole other) {
+            this.capacity = other.capacity;
+            this.degree = other.degree;
+            this.isFree = other.isFree;
+            this.numberOfBall = other.numberOfBall;
+            this.numberOfHole = other.numberOfHole;
         }
 
         public Hole(int numberOfHole) {

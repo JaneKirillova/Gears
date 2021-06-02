@@ -1,19 +1,13 @@
 package com.example.gears;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowInsets;
-import android.view.WindowMetrics;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -45,16 +39,67 @@ import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
     private final ArrayList<GearImage> gears = new ArrayList<>();
+    ImageView ballInRightGutter, ballInLeftGutter;
     EventBus eventBus = EventBus.getDefault();
     Button endTurn;
     String currentPlayer;
     private GameState gameState;
-    private Board currentBoard;
+    private Board currentPlayerBoard, otherPlayerBoard;
     private Gson gson = new Gson();
     private int activeGearNum = -2;
     String gameId;
     Boolean needToAddToTurn = true;
     int numberOfDrownGears = 0;
+
+
+    private void endGame() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_END_GAME + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        finish();
+                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        eventBus.post(new ErrorEvent(error));
+                    }
+                }) {
+
+            // TODO
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("token", "hello");
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                JSONObject toReturn;
+                try {
+                    toReturn = new JSONObject(gson.toJson(currentPlayerBoard));
+                    return toReturn.toString().getBytes("utf-8");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
 
 
     private void initBoard() {
@@ -89,7 +134,7 @@ public class GameActivity extends AppCompatActivity {
             public byte[] getBody() throws AuthFailureError {
                 JSONObject toReturn;
                 try {
-                    toReturn = new JSONObject(gson.toJson(currentBoard));
+                    toReturn = new JSONObject(gson.toJson(currentPlayerBoard));
                     return toReturn.toString().getBytes("utf-8");
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -122,7 +167,6 @@ public class GameActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-//                        if (error.getError().toString())
                         eventBus.post(new ErrorEvent(error));
                     }
                 }) {
@@ -204,9 +248,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        currentBoard = new Board();
+        currentPlayerBoard = new Board();
         if (currentPlayer.equals("FIRSTPLAYER")) {
-            currentBoard.getPot().setDegree(240);
+            currentPlayerBoard.getPot().setDegree(240);
         }
     }
 
@@ -243,12 +287,14 @@ public class GameActivity extends AppCompatActivity {
         gson = new Gson();
         gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
         if (currentPlayer.equals("FIRSTPLAYER")) {
-            currentBoard = gameState.getFirstPlayerBoard();
+            currentPlayerBoard = gameState.getFirstPlayerBoard();
+            otherPlayerBoard = new Board(gameState.getSecondPlayerBoard());
         } else {
-            currentBoard = gameState.getSecondPlayerBoard();
+            currentPlayerBoard = gameState.getSecondPlayerBoard();
+            otherPlayerBoard = new Board(gameState.getFirstPlayerBoard());
         }
-        for (int i = 0; i < currentBoard.getGears().size(); i++) {
-            gears.get(i).setGearWithHoles(currentBoard.getGears().get(i));
+        for (int i = 0; i < currentPlayerBoard.getGears().size(); i++) {
+            gears.get(i).setGearWithHoles(currentPlayerBoard.getGears().get(i));
         }
 
 
@@ -268,6 +314,9 @@ public class GameActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventUpdateGame(SuccessEventUpdateGame event) {
+        if (otherPlayerBoard.isAllBallsInPot()) {
+            endGame();
+        }
         getGame();
     }
 
@@ -280,10 +329,17 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+//        currentPlayer = "SECONDPLAYER";
+//        currentPlayer = "FIRSTPLAYER";
+        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            setContentView(R.layout.activity_game_field1);
+        } else {
+            setContentView(R.layout.activity_game_field2);
+        }
         gameId = SharedPrefManager.getInstance(this).getGameId();
 //        gameId = "7594281976693506295";
-        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
+//        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
 //        currentPlayer = "FIRSTPLAYER";
 
         gears.add(new GearImage(1, 1));
@@ -318,11 +374,7 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        if (currentPlayer.equals("FIRSTPLAYER")) {
-            initFirstPlayerScreen();
-        } else {
-            initFirstPlayerScreen();
-        }
+        initFirstPlayerScreen();
 
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
@@ -422,8 +474,10 @@ public class GameActivity extends AppCompatActivity {
         gears.get(2).selectingButton = findViewById(R.id.button3);
         gears.get(3).selectingButton = findViewById(R.id.button4);
         gears.get(4).selectingButton = findViewById(R.id.button5);
-    }
 
+        ballInLeftGutter = findViewById(R.id.imageView_ball_left_gutter);
+        ballInRightGutter = findViewById(R.id.imageView_ball_right_gutter);
+    }
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -566,7 +620,7 @@ public class GameActivity extends AppCompatActivity {
             gearNum++;
         }
 
-        currentBoard.setGears(gearsToAddToBoard);
+        currentPlayerBoard.setGears(gearsToAddToBoard);
     }
 
 
@@ -665,7 +719,6 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void rotateWithMonitoringBalls(float degree) {
-//        System.out.println("!!!!!!!! deg: " + gears.get(4).gear.getDegree() + "  !!!!!!!!");
         System.out.println("!!!!!!! " + gears.get(0).gear.getDegree() + " " + gears.get(1).gear.getDegree() + " "
                 + gears.get(2).gear.getDegree() + " " + gears.get(3).gear.getDegree() + " " + gears.get(4).gear.getDegree() + " !!!!!!!!!!!!!!!!!!!");
         double step = 2.5;
@@ -690,7 +743,7 @@ public class GameActivity extends AppCompatActivity {
         if (needToAddToTurn) {
             gameState.getTurn().addDegreeToArrayDegree(degree);
         }
-        currentBoard.rebuild(degree, activeGearNum);
+        currentPlayerBoard.rebuild(degree, activeGearNum);
 
         List<Integer> allGearsToRedraw = new ArrayList<>();
         allGearsToRedraw.add(activeGearNum);
@@ -706,5 +759,14 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
+        if (currentPlayerBoard.getLeftGutter().getHowManyBalls() == 0) {
+            ballInLeftGutter.setVisibility(View.INVISIBLE);
+        }
+
+        if (currentPlayerBoard.getRightGutter().getHowManyBalls() == 0) {
+            ballInRightGutter.setVisibility(View.INVISIBLE);
+        }
+
+        otherPlayerBoard.rebuild(degree, activeGearNum);
     }
 }

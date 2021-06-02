@@ -1,4 +1,5 @@
 package com.example.gears.GameObjects;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,19 @@ public class Board {
     private Gutter leftGutter = new Gutter(300);
     private Pot pot = new Pot();
     final private int step = 10;
+
+    public Board() {};
+    public Board(Board other) {
+        this.gears = other.gears;
+        this.rightGutter = other.rightGutter;
+        this.leftGutter = other.leftGutter;
+        this.pot = other.pot;
+        List<Gear> newGears = new ArrayList<>();
+        for (Gear gear: other.gears) {
+            newGears.add(new Gear(gear));
+        }
+        this.gears = newGears;
+    }
 
     public Gutter getLeftGutter() {
         return leftGutter;
@@ -70,17 +84,18 @@ public class Board {
     private void putBallsInFirstGear(int activeGear, Gear changingGear) {
         if (changingGear.isFirst()) {
             for (Gear.Hole holeOfChangingGear : changingGear.getHoles()) {
-                if (holeOfChangingGear.isFree() && isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree()) ||
-                    isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree())) {
+                if (holeOfChangingGear.isFree() && (isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree()) ||
+                    isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree()))) {
 
-                    if (isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree())) {
+                    if (this.getLeftGutter().getHowManyBalls() > 0 && isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree())) {
                         this.getLeftGutter().setHowManyBalls(getLeftGutter().getHowManyBalls() - holeOfChangingGear.getCapacity());
+                        holeOfChangingGear.setFree(false);
                     }
 
-                    if (isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree())) {
+                    if (this.getRightGutter().getHowManyBalls() > 0 && isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree())) {
                         this.getRightGutter().setHowManyBalls(getRightGutter().getHowManyBalls() - holeOfChangingGear.getCapacity());
+                        holeOfChangingGear.setFree(false);
                     }
-                    holeOfChangingGear.setFree(false);
                 }
             }
 
