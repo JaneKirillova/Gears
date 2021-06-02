@@ -43,6 +43,7 @@ public class GameActivity extends AppCompatActivity {
     EventBus eventBus = EventBus.getDefault();
     Button endTurn;
     String currentPlayer;
+    String token;
     private GameState gameState;
     private Board currentPlayerBoard, otherPlayerBoard;
     private Gson gson = new Gson();
@@ -53,7 +54,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void endGame() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_END_GAME + gameId + "/player/" + currentPlayer,
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, URLs.URL_END_GAME + gameId + "/player/" + currentPlayer,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -74,27 +75,8 @@ public class GameActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=utf-8");
-                params.put("token", "hello");
+                params.put("token", token);
                 return params;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                JSONObject toReturn;
-                try {
-                    toReturn = new JSONObject(gson.toJson(currentPlayerBoard));
-                    return toReturn.toString().getBytes("utf-8");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                return null;
             }
         };
 
@@ -121,7 +103,7 @@ public class GameActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=utf-8");
-                params.put("token", "hello");
+                params.put("token", token);
                 return params;
             }
 
@@ -174,7 +156,7 @@ public class GameActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 //                params.put("Content-Type", "application/json");
-                params.put("token", "hello");
+                params.put("token", token);
                 return params;
             }
         };
@@ -184,6 +166,23 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateGame(GameState gameStateToSend) {
         activeGearNum = -2;
+        if (currentPlayerBoard.isAllBallsInPot() || otherPlayerBoard.isAllBallsInPot()) {
+            if (currentPlayerBoard.isAllBallsInPot() && otherPlayerBoard.isAllBallsInPot()) {
+                gameStateToSend.setCurrentGameState(GameState.CurrentGameState.DRAW);
+            } else if (currentPlayerBoard.isAllBallsInPot()) {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    gameStateToSend.setCurrentGameState(GameState.CurrentGameState.FIRSTPLAYER);
+                } else {
+                    gameStateToSend.setCurrentGameState(GameState.CurrentGameState.SECONDPLAYER);
+                }
+            } else {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    gameStateToSend.setCurrentGameState(GameState.CurrentGameState.SECONDPLAYER);
+                } else {
+                    gameStateToSend.setCurrentGameState(GameState.CurrentGameState.FIRSTPLAYER);
+                }
+            }
+        }
         if (currentPlayer.equals("FIRSTPLAYER")) {
             gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.SECONDPLAYER);
         } else {
@@ -287,9 +286,15 @@ public class GameActivity extends AppCompatActivity {
         gson = new Gson();
         gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
         if (currentPlayer.equals("FIRSTPLAYER")) {
+//            if (gameState.getCurrentGameState() == GameState.CurrentGameState.SECONDPLAYER) {
+//                endGame();
+//            }
             currentPlayerBoard = gameState.getFirstPlayerBoard();
             otherPlayerBoard = new Board(gameState.getSecondPlayerBoard());
         } else {
+//            if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
+//                endGame();
+//            }
             currentPlayerBoard = gameState.getSecondPlayerBoard();
             otherPlayerBoard = new Board(gameState.getFirstPlayerBoard());
         }
@@ -307,6 +312,10 @@ public class GameActivity extends AppCompatActivity {
                 rotateWithMonitoringBalls(degree);
             }
         }
+
+        if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            endGame();
+        }
         needToAddToTurn = true;
         activeGearNum = -1;
         gameState.setTurn(gameState.new Turn());
@@ -314,7 +323,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventUpdateGame(SuccessEventUpdateGame event) {
-        if (otherPlayerBoard.isAllBallsInPot()) {
+        if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
             endGame();
         }
         getGame();
@@ -332,6 +341,8 @@ public class GameActivity extends AppCompatActivity {
 //        currentPlayer = "SECONDPLAYER";
 //        currentPlayer = "FIRSTPLAYER";
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
+        token = SharedPrefManager.getInstance(this).getToken();
+
         if (currentPlayer.equals("FIRSTPLAYER")) {
             setContentView(R.layout.activity_game_field1);
         } else {
