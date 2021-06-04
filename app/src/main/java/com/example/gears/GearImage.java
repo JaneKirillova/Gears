@@ -5,13 +5,11 @@ import android.graphics.Matrix;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.gears.GameObjects.Gear;
+import com.example.gears.gameObjects.Gear;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 

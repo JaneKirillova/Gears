@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,12 +74,30 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.print("ОШИБКА2: ");
-                        System.out.println(error.getMessage());
-//                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
-//                        System.out.println(s);
-//                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                        String body;
+                        //get status code here
+                        String statusCode = String.valueOf(error.networkResponse.statusCode);
+                        //get response body and parse with appropriate encoding
+                        if(error.networkResponse.data!=null) {
+                            try {
+                                body = new String(error.networkResponse.data,"UTF-8");
+                                Toast.makeText(getApplicationContext(), body, Toast.LENGTH_SHORT).show();
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        //do stuff with the body...
                     }
+
+
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        System.out.print("ОШИБКА2: ");
+//                        System.out.println(error.getMessage());
+////                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+////                        System.out.println(s);
+////                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//                    }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

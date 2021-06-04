@@ -1,4 +1,4 @@
-package com.example.gears.GameObjects;
+package com.example.gears.gameObjects;
 
 import java.util.ArrayList;
 import java.util.List;

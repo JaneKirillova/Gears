@@ -2,7 +2,7 @@ package com.example.gears;
 
 public class URLs {
 
-    private static final String ROOT_URL = "https://3c8cb3e80321.ngrok.io/";
+    private static final String ROOT_URL = "https://1344d02a6952.ngrok.io/";
 
     public static final String URL_REGISTER = ROOT_URL + "register";
     public static final String URL_LOGIN= ROOT_URL + "login";
@@ -12,4 +12,5 @@ public class URLs {
     public static final String URL_END_GAME= ROOT_URL + "game/";
     public static final String URL_GET_USER = ROOT_URL + "user";
     public static final String URL_INIT_BOARD = ROOT_URL + "init/";
+    public static final String URL_GET_BOARD = ROOT_URL + "board/";
 }

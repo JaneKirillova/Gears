@@ -1,4 +1,4 @@
-package com.example.gears.GameObjects;
+package com.example.gears.gameObjects;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,8 +14,8 @@ public class Board {
     public Board() {};
     public Board(Board other) {
         this.gears = other.gears;
-        this.rightGutter = other.rightGutter;
-        this.leftGutter = other.leftGutter;
+        this.rightGutter = new Gutter(other.rightGutter);
+        this.leftGutter = new Gutter(other.leftGutter);
         this.pot = new Pot(other.pot);
         List<Gear> newGears = new ArrayList<>();
         for (Gear gear: other.gears) {
@@ -66,6 +66,10 @@ public class Board {
                 changingGear.setDegree(360 - step);
             }
 
+            if (changingGear.getDegree() == 60) {
+                System.out.println("aaaaa");
+            }
+
             extractBallsFromLastGear(activeGear, changingGear);
             putBallsInFirstGear(activeGear, changingGear);
 
@@ -98,7 +102,6 @@ public class Board {
                     }
                 }
             }
-
         }
     }
 
@@ -109,8 +112,6 @@ public class Board {
                 !holeOfChangingGear.isFree()) {
                     this.getPot().setHowManyBalls(getPot().getHowManyBalls() + holeOfChangingGear.getCapacity());
                     holeOfChangingGear.setFree(true);
-
-//                    changingGear.getHoles().set(holeOfChangingGear.getNumberOfHole(), holeOfChangingGear);
                 }
             }
             List<Gear> arrayOfGears = this.getGears();
@@ -153,6 +154,9 @@ public class Board {
     }
 
     private boolean checkDegreeEquals(Gear.Hole upperGearHole, Gear.Hole downGearHole, double xUpperGear, double xDownGear) {
+        if (upperGearHole.getDegree() == 180) {
+            return downGearHole.getDegree() > 350 || downGearHole.getDegree() < 10;
+        }
         if (xUpperGear - xDownGear < 0) {
             return upperGearHole.getDegree() < 180 && downGearHole.getDegree() > 180 &&
                     isEqualDegrees(upperGearHole.getDegree(), downGearHole.getDegree() - 180);

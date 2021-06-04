@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.widget.ImageView;
 
-import com.example.gears.GameObjects.Gear;
+import com.example.gears.gameObjects.Gear;
 
 public class HoleImage {
     public Bitmap image;

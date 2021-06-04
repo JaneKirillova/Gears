@@ -1,6 +1,7 @@
 package com.example.gears;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,9 +20,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.gears.GameObjects.Board;
-import com.example.gears.GameObjects.GameState;
-import com.example.gears.GameObjects.Gear;
+import com.example.gears.gameObjects.Board;
+import com.example.gears.gameObjects.GameState;
+import com.example.gears.gameObjects.Gear;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
+    Dialog dialog = new Dialog(GameActivity.this);
     private final ArrayList<GearImage> gears = new ArrayList<>();
     ImageView ballInRightGutter, ballInLeftGutter;
     EventBus eventBus = EventBus.getDefault();
@@ -52,6 +55,39 @@ public class GameActivity extends AppCompatActivity {
     Boolean needToAddToTurn = true;
     int numberOfDrownGears = 0;
 
+
+    private void getBoard() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_BOARD
+                + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            eventBus.post(new SuccessEventGetBoard(obj));
+                        } catch (JSONException e) {
+                            System.out.print("ОШИБКА1: ");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        eventBus.post(new ErrorEvent(error));
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/json");
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
 
     private void endGame() {
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, URLs.URL_END_GAME + gameId + "/player/" + currentPlayer,
@@ -68,8 +104,6 @@ public class GameActivity extends AppCompatActivity {
                         eventBus.post(new ErrorEvent(error));
                     }
                 }) {
-
-            // TODO
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -277,6 +311,21 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEventGetBoard(SuccessEventGetBoard event) {
+        gson = new Gson();
+        int diff = (int) (Math.random() * 180);
+        Board firstPlayerBoard = gson.fromJson(event.getResponse().toString(), Board.class);
+        for (int i = 0; i < 5; i++) {
+            int angle = firstPlayerBoard.getGears().get(i).getDegree() + diff;
+            rotateDialer(gears.get(i), angle);
+            gears.get(i).gear.setDegree(angle);
+        }
+        initBoard();
+        Toast.makeText(getApplicationContext(), "Waiting for another player turn", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
         getGame();
     }
@@ -286,23 +335,15 @@ public class GameActivity extends AppCompatActivity {
         gson = new Gson();
         gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
         if (currentPlayer.equals("FIRSTPLAYER")) {
-//            if (gameState.getCurrentGameState() == GameState.CurrentGameState.SECONDPLAYER) {
-//                endGame();
-//            }
             currentPlayerBoard = gameState.getFirstPlayerBoard();
             otherPlayerBoard = new Board(gameState.getSecondPlayerBoard());
         } else {
-//            if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
-//                endGame();
-//            }
             currentPlayerBoard = gameState.getSecondPlayerBoard();
             otherPlayerBoard = new Board(gameState.getFirstPlayerBoard());
         }
         for (int i = 0; i < currentPlayerBoard.getGears().size(); i++) {
             gears.get(i).setGearWithHoles(currentPlayerBoard.getGears().get(i));
         }
-
-
 
         List<Integer> degreesFromTurn = gameState.getTurn().getDegree();
         if (degreesFromTurn != null) {
@@ -314,18 +355,52 @@ public class GameActivity extends AppCompatActivity {
         }
 
         if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            if (gameState.getCurrentGameState() == GameState.CurrentGameState.DRAW) {
+                Toast.makeText(getApplicationContext(), "Draw!", Toast.LENGTH_SHORT).show();
+            }
+            if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    Toast.makeText(getApplicationContext(), "You won!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "You won", Toast.LENGTH_SHORT).show();
+                }
+            }
             endGame();
         }
         needToAddToTurn = true;
         activeGearNum = -1;
         gameState.setTurn(gameState.new Turn());
+        Toast.makeText(getApplicationContext(), "Now it's your turn", Toast.LENGTH_SHORT).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventUpdateGame(SuccessEventUpdateGame event) {
         if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            if (gameState.getCurrentGameState() == GameState.CurrentGameState.DRAW) {
+                Toast.makeText(getApplicationContext(), "Draw!", Toast.LENGTH_SHORT).show();
+            }
+            if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    Toast.makeText(getApplicationContext(), "You won!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                if (currentPlayer.equals("FIRSTPLAYER")) {
+                    Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "You won", Toast.LENGTH_SHORT).show();
+                }
+            }
             endGame();
         }
+        Toast.makeText(getApplicationContext(), "Waiting for another player turn", Toast.LENGTH_SHORT).show();
         getGame();
     }
 
@@ -343,11 +418,11 @@ public class GameActivity extends AppCompatActivity {
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
         token = SharedPrefManager.getInstance(this).getToken();
 
-//        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals("FIRSTPLAYER")) {
             setContentView(R.layout.activity_game_field1);
-//        } else {
-//            setContentView(R.layout.activity_game_field2);
-//        }
+        } else {
+            setContentView(R.layout.activity_game_field2);
+        }
         gameId = SharedPrefManager.getInstance(this).getGameId();
 //        gameId = "7594281976693506295";
 //        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
@@ -408,8 +483,6 @@ public class GameActivity extends AppCompatActivity {
                 updateGame(gameState);
             }
         });
-
-        activeGearNum = -1;
     }
 
     private void initFirstPlayerScreen() {
@@ -543,7 +616,12 @@ public class GameActivity extends AppCompatActivity {
                         holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
                     }
                     if (numberOfDrownGears == 5) {
-                        initBoard();
+//                        initBoard();
+                        if (currentPlayer.equals("FIRSTPLAYER")) {
+                            makeUniqueBoard();
+                        } else {
+                            getBoard();
+                        }
                     }
                 }
             });
@@ -752,7 +830,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void redraw(int degree) {
         if (needToAddToTurn) {
-            gameState.getTurn().addDegreeToArrayDegree(degree);
+            gameState.getTurn().addDegreeToArrayDegree(-degree);
         }
         currentPlayerBoard.rebuild(degree, activeGearNum);
 
@@ -778,6 +856,20 @@ public class GameActivity extends AppCompatActivity {
             ballInRightGutter.setVisibility(View.INVISIBLE);
         }
 
-        otherPlayerBoard.rebuild(degree, activeGearNum);
+        if (needToAddToTurn) {
+            otherPlayerBoard.rebuild(-degree, activeGearNum);
+        }
     }
+
+    public void makeUniqueBoard() {
+        int angle;
+        for (int i = 0; i < 5; i++) {
+            angle = (int) (Math.random() * 360);
+            angle = (angle / 10) * 10;
+            rotateDialer(gears.get(i), angle);
+            gears.get(i).gear.setDegree(angle);
+        }
+        initBoard();
+    }
+
 }
