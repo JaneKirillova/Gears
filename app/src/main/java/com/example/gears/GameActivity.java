@@ -38,9 +38,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity {
-    Dialog dialog = new Dialog(GameActivity.this);
+//    Dialog dialog = new Dialog(GameActivity.this);
     private final ArrayList<GearImage> gears = new ArrayList<>();
     ImageView ballInRightGutter, ballInLeftGutter;
     EventBus eventBus = EventBus.getDefault();
@@ -58,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void getBoard() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_BOARD
-                + gameId + "/player/" + currentPlayer,
+                + gameId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -287,13 +288,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    public void rotateEx() {
-        List<Integer> degs = Arrays.asList(10);
-        activeGearNum = 0;
-        for (Integer degree: degs) {
-            rotateWithMonitoringBalls(degree);
-        }
-    }
 
 
     @Override
@@ -301,7 +295,6 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         initGameState();
         setListeners();
-//        initBoard();
     }
 
     @Override
@@ -313,10 +306,10 @@ public class GameActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventGetBoard(SuccessEventGetBoard event) {
         gson = new Gson();
-        int diff = (int) (Math.random() * 180);
-        Board firstPlayerBoard = gson.fromJson(event.getResponse().toString(), Board.class);
+        int diff = 90;
+        GameState tmpGameState = gson.fromJson(event.getResponse().toString(), GameState.class);
         for (int i = 0; i < 5; i++) {
-            int angle = firstPlayerBoard.getGears().get(i).getDegree() + diff;
+            int angle = tmpGameState.getFirstPlayerBoard().getGears().get(i).getDegree() + diff;
             rotateDialer(gears.get(i), angle);
             gears.get(i).gear.setDegree(angle);
         }
@@ -372,6 +365,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
             endGame();
+            return;
         }
         needToAddToTurn = true;
         activeGearNum = -1;
@@ -399,6 +393,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
             endGame();
+            return;
         }
         Toast.makeText(getApplicationContext(), "Waiting for another player turn", Toast.LENGTH_SHORT).show();
         getGame();
@@ -416,7 +411,7 @@ public class GameActivity extends AppCompatActivity {
 //        currentPlayer = "SECONDPLAYER";
 //        currentPlayer = "FIRSTPLAYER";
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
-        token = SharedPrefManager.getInstance(this).getToken();
+//        token = SharedPrefManager.getInstance(this).getToken();
 
         if (currentPlayer.equals("FIRSTPLAYER")) {
             setContentView(R.layout.activity_game_field1);
@@ -465,11 +460,11 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-                if (activeGearNum != -1) {
-                    return;
-                }
+//                if (activeGearNum != -1) {
+//                    return;
+//                }
                 activeGearNum = gears.get(finalI).gearNumber - 1;
-                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
+//                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
             });
         }
         endTurn = findViewById(R.id.end_turn);
@@ -616,12 +611,12 @@ public class GameActivity extends AppCompatActivity {
                         holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
                     }
                     if (numberOfDrownGears == 5) {
-//                        initBoard();
-                        if (currentPlayer.equals("FIRSTPLAYER")) {
-                            makeUniqueBoard();
-                        } else {
-                            getBoard();
-                        }
+                        makeUniqueBoard();
+//                        if (currentPlayer.equals("FIRSTPLAYER")) {
+//                            makeUniqueBoard();
+//                        } else {
+//                            getBoard();
+//                        }
                     }
                 }
             });
@@ -829,9 +824,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void redraw(int degree) {
-        if (needToAddToTurn) {
-            gameState.getTurn().addDegreeToArrayDegree(-degree);
-        }
+//        if (needToAddToTurn) {
+//            gameState.getTurn().addDegreeToArrayDegree(-degree);
+//        }
         currentPlayerBoard.rebuild(degree, activeGearNum);
 
         List<Integer> allGearsToRedraw = new ArrayList<>();
@@ -856,9 +851,9 @@ public class GameActivity extends AppCompatActivity {
             ballInRightGutter.setVisibility(View.INVISIBLE);
         }
 
-        if (needToAddToTurn) {
-            otherPlayerBoard.rebuild(-degree, activeGearNum);
-        }
+//        if (needToAddToTurn) {
+//            otherPlayerBoard.rebuild(-degree, activeGearNum);
+//        }
     }
 
     public void makeUniqueBoard() {
@@ -869,7 +864,7 @@ public class GameActivity extends AppCompatActivity {
             rotateDialer(gears.get(i), angle);
             gears.get(i).gear.setDegree(angle);
         }
-        initBoard();
+//        initBoard();
     }
 
 }

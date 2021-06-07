@@ -21,9 +21,8 @@ public class GearImage {
             case (2):
                 return Collections.singletonList(0);
             case(3):
-                return Collections.singletonList(1);
             case (4):
-                return Arrays.asList(1, 2);
+                return Collections.singletonList(1);
             case (5):
                 return Arrays.asList(2, 3);
         }
@@ -41,7 +40,6 @@ public class GearImage {
             case (2):
                 return Arrays.asList(2, 3);
             case(3):
-                return Arrays.asList(3, 4);
             case (4):
                 return Collections.singletonList(4);
             case (5):

@@ -19,7 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton = findViewById(R.id.login);
         registerButton = findViewById(R.id.register);
-        loginButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
+        loginButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//            SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "FIRSTPLAYER");
+//            startActivity(new Intent(MainActivity.this, GameActivity.class));
+        });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -29,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-//                Toast.makeText(MainActivity.this, "Enter your Email and Password to login", Toast.LENGTH_SHORT).show();
+//                SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "SECONDPLAYER");
+//                startActivity(new Intent(MainActivity.this, GameActivity.class));
             }
         });
     }
