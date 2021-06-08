@@ -3,8 +3,6 @@ package com.example.gears;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.android.volley.toolbox.StringRequest;
-
 
 public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "simplifiedcodingsharedpref";
@@ -15,6 +13,8 @@ public class SharedPrefManager {
     private static final String KEY_POINTS = "keypoints";
     private static final String KEY_CURRENT_GAME_ID = "keycurrentgameid";
     private static final String KEY_CURRENT_GAME_PLAYER_NUM = "keycurrentplayerturnnum";
+    private static final String KEY_PROFILE_PHOTO_DIRECTORY = "keyprofilephotodirectory";
+    private static final String KEY_PICTURE_WAS_LOADED = "keypicturewasloaded";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -33,6 +33,30 @@ public class SharedPrefManager {
     public String getToken() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
+    public void savePhotoDirectory(String path) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_PROFILE_PHOTO_DIRECTORY, path);
+        editor.apply();
+    }
+
+    public String getPhotoDirectory() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_PROFILE_PHOTO_DIRECTORY, null);
+    }
+
+    public boolean isPictureLoaded() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_PICTURE_WAS_LOADED, false);
+    }
+
+    public void setPictureIsLoaded(boolean pictureWasLoaded) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_PICTURE_WAS_LOADED, pictureWasLoaded);
+        editor.apply();
     }
 
     public void userLogin(User user) {

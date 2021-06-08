@@ -1,7 +1,6 @@
 package com.example.gears;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +19,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.gears.events.SuccessEventGetBoard;
+import com.example.gears.events.SuccessEventGetGame;
+import com.example.gears.events.SuccessEventInitBoard;
+import com.example.gears.events.SuccessEventUpdateGame;
 import com.example.gears.gameObjects.Board;
 import com.example.gears.gameObjects.GameState;
 import com.example.gears.gameObjects.Gear;
@@ -34,11 +37,9 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity {
 //    Dialog dialog = new Dialog(GameActivity.this);
@@ -471,11 +472,12 @@ public class GameActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (activeGearNum < 0) {
-                    return;
-                }
-                activeGearNum = -1;
-                updateGame(gameState);
+                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+//                if (activeGearNum < 0) {
+//                    return;
+//                }
+//                activeGearNum = -1;
+//                updateGame(gameState);
             }
         });
     }

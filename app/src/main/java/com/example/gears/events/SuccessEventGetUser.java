@@ -1,11 +1,11 @@
-package com.example.gears;
+package com.example.gears.events;
 
 import org.json.JSONObject;
 
-public class SuccessEventGetBoard {
+public class SuccessEventGetUser {
     private JSONObject response;
 
-    public SuccessEventGetBoard(JSONObject response) {
+    public SuccessEventGetUser(JSONObject response) {
         this.response = response;
     }
 

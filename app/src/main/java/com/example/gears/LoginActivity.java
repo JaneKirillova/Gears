@@ -2,7 +2,6 @@ package com.example.gears;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,15 +12,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
 
         loginButton.setOnClickListener(v -> loginUser());
+//        loginButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class)));
     }
 
 

@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPrefManager.getInstance(getApplicationContext()).setPictureIsLoaded(false);
+
         loginButton = findViewById(R.id.login);
         registerButton = findViewById(R.id.register);
         loginButton.setOnClickListener(v -> {
