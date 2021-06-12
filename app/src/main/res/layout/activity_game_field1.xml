@@ -470,6 +470,7 @@
         android:layout_height="50dp"
         android:layout_x="263dp"
         android:layout_y="133dp"
+        android:background="#0000"
         android:text="1" />
 
     <Button
@@ -478,6 +479,7 @@
         android:layout_height="50dp"
         android:layout_x="113dp"
         android:layout_y="209dp"
+        android:background="#0000"
         android:text="2" />
 
     <Button
@@ -486,6 +488,7 @@
         android:layout_height="50dp"
         android:layout_x="257dp"
         android:layout_y="285dp"
+        android:background="#0000"
         android:text="3" />
 
     <Button
@@ -494,6 +497,7 @@
         android:layout_height="50dp"
         android:layout_x="87dp"
         android:layout_y="358dp"
+        android:background="#0000"
         android:text="4" />
 
     <Button
@@ -502,6 +506,7 @@
         android:layout_height="50dp"
         android:layout_x="241dp"
         android:layout_y="447dp"
+        android:background="#0000"
         android:text="5" />
 
     <Button

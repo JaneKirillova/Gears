@@ -22,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.login);
         registerButton = findViewById(R.id.register);
         loginButton.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-//            SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "FIRSTPLAYER");
-//            startActivity(new Intent(MainActivity.this, GameActivity.class));
+//            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "FIRSTPLAYER");
+            startActivity(new Intent(MainActivity.this, PersonalAccountActivity.class));
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {

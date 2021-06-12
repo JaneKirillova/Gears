@@ -44,7 +44,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class PersonalAccountActivity extends AppCompatActivity {
-    Button startGame, loadImage;
+    Button startGame, loadImage, tmpButton;
     EventBus eventBus = EventBus.getDefault();
     TextView userId, userLogin, userPassword;
     User user;
@@ -200,6 +200,11 @@ public class PersonalAccountActivity extends AppCompatActivity {
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, 1);
             }
+        });
+
+        tmpButton = findViewById(R.id.button);
+        tmpButton.setOnClickListener(v -> {
+            startActivity(new Intent(PersonalAccountActivity.this, MainActivity2.class));
         });
 
         final User oldUser = SharedPrefManager.getInstance(this).getUser();

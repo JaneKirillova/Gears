@@ -667,27 +667,27 @@ public class GameActivity extends AppCompatActivity {
     private Map.Entry<Double, Double> getDxDyForHoles(GearImage gear, HoleImage hole) {
         int degree = hole.degree;
         if (degree <= 90) {
-            Double dx = gear.radius + (gear.radius - 5) * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius - (gear.radius - 5) * Math.cos(Math.toRadians(degree));
+            Double dx = gear.radius + (gear.radius - 2) * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius - (gear.radius - 2) * Math.cos(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         if (degree <= 180) {
             degree -= 90;
-            Double dx = gear.radius + (gear.radius - 5) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius + (gear.radius - 5) * Math.sin(Math.toRadians(degree));
+            Double dx = gear.radius + (gear.radius - 2) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius - 2) * Math.sin(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
         if (degree <= 270) {
             degree -= 180;
-            Double dx = gear.radius - (gear.radius - 5) * Math.sin(Math.toRadians(degree))- hole.image.getWidth() / 2;
-            Double dy = gear.radius + (gear.radius - 5) * Math.cos(Math.toRadians(degree));
+            Double dx = gear.radius - (gear.radius - 2) * Math.sin(Math.toRadians(degree))- hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius - 2) * Math.cos(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         degree -= 270;
-        Double dx = gear.radius - (gear.radius - 5) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-        Double dy = gear.radius - (gear.radius - 5) * Math.sin(Math.toRadians(degree));
+        Double dx = gear.radius - (gear.radius - 2) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+        Double dy = gear.radius - (gear.radius - 2) * Math.sin(Math.toRadians(degree));
         return new AbstractMap.SimpleEntry<>(dx, dy);
     }
 
