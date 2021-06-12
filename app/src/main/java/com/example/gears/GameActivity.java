@@ -74,7 +74,29 @@ public class GameActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject obj = new JSONObject(response);
-                            eventBus.post(new SuccessEventGetMessage(obj));
+//                            eventBus.post(new SuccessEventGetMessage(obj));
+                            gson = new Gson();
+                            Message message = gson.fromJson(obj.toString(), Message.class);
+                            for(ImageView stiker: stikers) {
+                                stiker.setVisibility(View.INVISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.FIRSTTYPE) {
+                                stikers.get(0).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.SECONDTYPE) {
+                                stikers.get(1).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.THIRDTYPE) {
+                                stikers.get(2).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
+                                stikers.get(3).setVisibility(View.VISIBLE);
+                            }
+                            if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+                                getMessage();
+                            } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+                                eventBus.post(new SuccessEventEndGame());
+                            }
                         } catch (JSONException e) {
                             System.out.print("ОШИБКА1: ");
                             e.printStackTrace();
@@ -84,7 +106,15 @@ public class GameActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        eventBus.post(new ErrorEventGetMessage(error));
+//                        eventBus.post(new ErrorEventGetMessage(error));
+                        for(ImageView stiker: stikers) {
+                            stiker.setVisibility(View.INVISIBLE);
+                        }
+                        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+                            getMessage();
+                        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+                            eventBus.post(new SuccessEventEndGame());
+                        }
                     }
                 }) {
             @Override
