@@ -44,7 +44,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class PersonalAccountActivity extends AppCompatActivity {
-    Button startGame, loadImage;
+    Button startGame, loadImage, tmpRating;
     EventBus eventBus = EventBus.getDefault();
     TextView userId, userLogin, userPassword;
     User user;
@@ -131,9 +131,39 @@ public class PersonalAccountActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 
                     }
-                }) { };
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json");
+                params.put("token", user.getToken());
+                return params;
+            }
+        };
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
+
+    private void getRating() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_RATING,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.print("ОШИБКА2: ");
+                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+                        System.out.println(s);
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+                    }
+                }) {};
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
 
 
     private void loadPicture() {
@@ -252,10 +282,12 @@ public class PersonalAccountActivity extends AppCompatActivity {
         startGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                findOpponent();
-                startActivity(new Intent(PersonalAccountActivity.this, GameActivity.class));
+                findOpponent();
+//                startActivity(new Intent(PersonalAccountActivity.this, GameActivity.class));
             }
         });
+        tmpRating = findViewById(R.id.button);
+        tmpRating.setOnClickListener(v -> getRating());
     }
 
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -559,6 +560,70 @@
         android:contentDescription="TODO"
         android:scaleType="centerCrop"
         android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/stiker1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="30dp"
+        android:layout_y="53dp"
+        app:srcCompat="@drawable/stiker1" />
+
+    <ImageView
+        android:id="@+id/stiker2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="30dp"
+        android:layout_y="53dp"
+        app:srcCompat="@drawable/stiker2" />
+
+    <ImageView
+        android:id="@+id/stiker3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="30dp"
+        android:layout_y="53dp"
+        app:srcCompat="@drawable/stiker3" />
+
+    <ImageView
+        android:id="@+id/stiker4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="30dp"
+        android:layout_y="53dp"
+        app:srcCompat="@drawable/stiker4" />
+
+    <Button
+        android:id="@+id/stiker_button1"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_x="196dp"
+        android:layout_y="658dp"
+        android:text="1" />
+
+    <Button
+        android:id="@+id/stiker_button2"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_x="253dp"
+        android:layout_y="655dp"
+        android:text="2" />
+
+    <Button
+        android:id="@+id/stiker_button3"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_x="305dp"
+        android:layout_y="645dp"
+        android:text="3" />
+
+    <Button
+        android:id="@+id/stiker_button4"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_x="357dp"
+        android:layout_y="654dp"
+        android:text="4" />
 
 
 </AbsoluteLayout>

@@ -1,4 +1,4 @@
-package com.example.gears;
+package com.example.gears.events;
 
 import com.android.volley.VolleyError;
 
