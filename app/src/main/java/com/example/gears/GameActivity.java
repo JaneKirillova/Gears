@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.gears.events.ErrorEvent;
 import com.example.gears.events.ErrorEventGetMessage;
+import com.example.gears.events.SuccessEventEndGame;
 import com.example.gears.events.SuccessEventGetBoard;
 import com.example.gears.events.SuccessEventGetGame;
 import com.example.gears.events.SuccessEventGetMessage;
@@ -189,8 +190,9 @@ public class GameActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                        eventBus.post(new SuccessEventEndGame());
+//                        finish();
+//                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
                     }
                 },
                 new Response.ErrorListener() {
@@ -398,6 +400,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEventEndGame(SuccessEventEndGame event) {
+        finish();
+        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventGetMessage(SuccessEventGetMessage event) {
         gson = new Gson();
         Message message = gson.fromJson(event.getResponse().toString(), Message.class);
@@ -416,8 +424,10 @@ public class GameActivity extends AppCompatActivity {
         if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
             stikers.get(3).setVisibility(View.VISIBLE);
         }
-        if (gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
             getMessage();
+        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            eventBus.post(new SuccessEventEndGame());
         }
     }
 
@@ -426,8 +436,10 @@ public class GameActivity extends AppCompatActivity {
         for(ImageView stiker: stikers) {
             stiker.setVisibility(View.INVISIBLE);
         }
-        if (gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
             getMessage();
+        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            eventBus.post(new SuccessEventEndGame());
         }
     }
 
