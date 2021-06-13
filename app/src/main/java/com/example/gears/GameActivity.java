@@ -754,7 +754,7 @@ public class GameActivity extends AppCompatActivity {
         stiker2.setVisibility(View.INVISIBLE);
         stikers.add(stiker2);
         stiker3 = findViewById(R.id.stiker3);
-        stiker2.setVisibility(View.INVISIBLE);
+        stiker3.setVisibility(View.INVISIBLE);
         stikers.add(stiker3);
         stiker4 = findViewById(R.id.stiker4);
         stiker4.setVisibility(View.INVISIBLE);
