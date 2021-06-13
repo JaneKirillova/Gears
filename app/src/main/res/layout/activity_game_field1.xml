@@ -593,37 +593,101 @@
         android:layout_y="53dp"
         app:srcCompat="@drawable/stiker4" />
 
+    <ImageView
+        android:id="@+id/stiker1_small"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="179dp"
+        android:layout_y="656dp"
+        app:srcCompat="@drawable/stiker1" />
+
+    <ImageView
+        android:id="@+id/stiker1_big"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_x="174dp"
+        android:layout_y="651dp"
+        app:srcCompat="@drawable/stiker1" />
+
+    <ImageView
+        android:id="@+id/stiker2_small"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="235dp"
+        android:layout_y="656dp"
+        app:srcCompat="@drawable/stiker2" />
+
+    <ImageView
+        android:id="@+id/stiker2_big"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_x="230dp"
+        android:layout_y="651dp"
+        app:srcCompat="@drawable/stiker2" />
+
+    <ImageView
+        android:id="@+id/stiker3_small"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="291dp"
+        android:layout_y="656dp"
+        app:srcCompat="@drawable/stiker3" />
+
+    <ImageView
+        android:id="@+id/stiker3_big"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_x="286dp"
+        android:layout_y="651dp"
+        app:srcCompat="@drawable/stiker3" />
+
+    <ImageView
+        android:id="@+id/stiker4_small"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="346dp"
+        android:layout_y="656dp"
+        app:srcCompat="@drawable/stiker4" />
+
+    <ImageView
+        android:id="@+id/stiker4_big"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_x="341dp"
+        android:layout_y="651dp"
+        app:srcCompat="@drawable/stiker4" />
+
     <Button
         android:id="@+id/stiker_button1"
-        android:layout_width="44dp"
-        android:layout_height="38dp"
-        android:layout_x="196dp"
-        android:layout_y="658dp"
-        android:text="1" />
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="179dp"
+        android:layout_y="656dp"
+        android:background="#0000" />
 
     <Button
         android:id="@+id/stiker_button2"
-        android:layout_width="44dp"
-        android:layout_height="38dp"
-        android:layout_x="253dp"
-        android:layout_y="655dp"
-        android:text="2" />
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="235dp"
+        android:layout_y="656dp"
+        android:background="#0000" />
 
     <Button
         android:id="@+id/stiker_button3"
-        android:layout_width="44dp"
-        android:layout_height="38dp"
-        android:layout_x="305dp"
-        android:layout_y="645dp"
-        android:text="3" />
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="291dp"
+        android:layout_y="656dp"
+        android:background="#0000"/>
 
     <Button
         android:id="@+id/stiker_button4"
-        android:layout_width="44dp"
-        android:layout_height="38dp"
-        android:layout_x="357dp"
-        android:layout_y="654dp"
-        android:text="4" />
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_x="346dp"
+        android:layout_y="656dp"
+        android:background="#0000" />
 
 
 </AbsoluteLayout>

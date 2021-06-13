@@ -64,7 +64,7 @@ public class GameActivity extends AppCompatActivity {
     Boolean needToAddToTurn = true;
     int numberOfDrownGears = 0;
     List<ImageView> stikers = new ArrayList<>();
-    List<Button> stikerButtons = new ArrayList<>();
+    List<StickerButton> stikerButtons = new ArrayList<>();
 
 
     private void getMessage() {
@@ -576,6 +576,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -640,6 +641,7 @@ public class GameActivity extends AppCompatActivity {
         }
         endTurn = findViewById(R.id.end_turn);
         endTurn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 //                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
@@ -653,18 +655,27 @@ public class GameActivity extends AppCompatActivity {
 
         for (int i = 0; i < stikerButtons.size(); i++) {
             final int finalI = i;
-            stikerButtons.get(finalI).setOnClickListener(v -> {
+            stikerButtons.get(finalI).button.setOnClickListener(v -> {
                 sendStiker(finalI);
+            });
+            stikerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    stikerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    stikerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
+                }
+
+                return true;
             });
         }
     }
 
     private void initFirstPlayerScreen() {
-        gears.get(0).dialer = (ImageView) findViewById(R.id.imageView_gear1);
-        gears.get(1).dialer = (ImageView) findViewById(R.id.imageView_gear2);
-        gears.get(2).dialer = (ImageView) findViewById(R.id.imageView_gear3);
-        gears.get(3).dialer = (ImageView) findViewById(R.id.imageView_gear4);
-        gears.get(4).dialer = (ImageView) findViewById(R.id.imageView_gear5);
+        gears.get(0).dialer = findViewById(R.id.imageView_gear1);
+        gears.get(1).dialer = findViewById(R.id.imageView_gear2);
+        gears.get(2).dialer = findViewById(R.id.imageView_gear3);
+        gears.get(3).dialer = findViewById(R.id.imageView_gear4);
+        gears.get(4).dialer = findViewById(R.id.imageView_gear5);
 
 
         gears.get(0).holes.get(0).dialer = findViewById(R.id.imageView_gear1_hole1);
@@ -740,24 +751,44 @@ public class GameActivity extends AppCompatActivity {
         stiker1.setVisibility(View.INVISIBLE);
         stikers.add(stiker1);
         stiker2 = findViewById(R.id.stiker2);
-        stiker1.setVisibility(View.INVISIBLE);
+        stiker2.setVisibility(View.INVISIBLE);
         stikers.add(stiker2);
         stiker3 = findViewById(R.id.stiker3);
-        stiker1.setVisibility(View.INVISIBLE);
+        stiker2.setVisibility(View.INVISIBLE);
         stikers.add(stiker3);
         stiker4 = findViewById(R.id.stiker4);
-        stiker1.setVisibility(View.INVISIBLE);
+        stiker4.setVisibility(View.INVISIBLE);
         stikers.add(stiker4);
 
-        st1 = findViewById(R.id.stiker_button1);
-        stikerButtons.add(st1);
-        st2 = findViewById(R.id.stiker_button2);
-        stikerButtons.add(st2);
-        st3 = findViewById(R.id.stiker_button3);
-        stikerButtons.add(st3);
-        st4 = findViewById(R.id.stiker_button4);
-        stikerButtons.add(st4);
+        StickerButton stickerButton1 = new StickerButton();
+        stickerButton1.button = findViewById(R.id.stiker_button1);
+        stickerButton1.smallImage = findViewById(R.id.stiker1_small);
+        stickerButton1.bigImage = findViewById(R.id.stiker1_big);
+        stickerButton1.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton1);
 
+        StickerButton stickerButton2 = new StickerButton();
+        stickerButton2.button = findViewById(R.id.stiker_button2);
+        stickerButton2.smallImage = findViewById(R.id.stiker2_small);
+        stickerButton2.bigImage = findViewById(R.id.stiker2_big);
+        stickerButton2.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton2);
+
+
+        StickerButton stickerButton3 = new StickerButton();
+        stickerButton3.button = findViewById(R.id.stiker_button3);
+        stickerButton3.smallImage = findViewById(R.id.stiker3_small);
+        stickerButton3.bigImage = findViewById(R.id.stiker3_big);
+        stickerButton3.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton3);
+
+
+        StickerButton stickerButton4 = new StickerButton();
+        stickerButton4.button = findViewById(R.id.stiker_button4);
+        stickerButton4.smallImage = findViewById(R.id.stiker4_small);
+        stickerButton4.bigImage = findViewById(R.id.stiker4_big);
+        stickerButton4.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton4);
     }
 
 
@@ -814,6 +845,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                     if (numberOfDrownGears == 5) {
 //                        makeUniqueBoard();
+                        //HERE
                         if (currentPlayer.equals("FIRSTPLAYER")) {
                             makeUniqueBoard();
                         } else {
@@ -990,7 +1022,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-
     private void rotateDialer(GearImage gearImage, float degrees) {
         gearImage.matrix.postRotate(degrees, gearImage.gear.getRadius(), gearImage.gear.getRadius());
         gearImage.dialer.setImageMatrix(gearImage.matrix);
@@ -1053,6 +1084,7 @@ public class GameActivity extends AppCompatActivity {
             ballInRightGutter.setVisibility(View.INVISIBLE);
         }
 
+        //HERE
         if (needToAddToTurn) {
             otherPlayerBoard.rebuild(-degree, activeGearNum);
         }
@@ -1066,6 +1098,8 @@ public class GameActivity extends AppCompatActivity {
             rotateDialer(gears.get(i), angle);
             gears.get(i).gear.setDegree(angle);
         }
+
+        //HERE
         initBoard();
     }
 
