@@ -490,8 +490,8 @@ public class GameActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
-        getMessage();
         getGame();
+        getMessage();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -655,11 +655,9 @@ public class GameActivity extends AppCompatActivity {
 
         for (int i = 0; i < stikerButtons.size(); i++) {
             final int finalI = i;
-            stikerButtons.get(finalI).button.setOnClickListener(v -> {
-                sendStiker(finalI);
-            });
             stikerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sendStiker(finalI);
                     stikerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     stikerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
