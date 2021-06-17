@@ -1,8 +1,8 @@
 package com.example.gears.events;
 
-public class SuccessEventLogin {
+public class SuccessEventUserAuth {
     private String response;
-    public SuccessEventLogin(String response) {
+    public SuccessEventUserAuth(String response) {
         this.response = response;
     }
 

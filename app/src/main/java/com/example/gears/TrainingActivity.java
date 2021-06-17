@@ -23,21 +23,24 @@ import java.util.List;
 import java.util.Map;
 
 public class TrainingActivity extends AppCompatActivity {
+    private static final String FIRSTPLAYER = "FIRSTPLAYER";
+    private static final String SECONDPLAYER = "SECONDPLAYER";
+
     private final ArrayList<GearImage> gears = new ArrayList<>();
-    ImageView ballInRightGutter, ballInLeftGutter;
-    String currentPlayer;
+    private ImageView ballInRightGutter, ballInLeftGutter;
+    private String currentPlayer;
     private Board currentPlayerBoard;
     private Gson gson = new Gson();
     private int activeGearNum = -1;
-    int numberOfDrownGears = 0;
-    TextView leftGutter, rightGutter;
+    private int numberOfDrownGears = 0;
+    private TextView leftGutter, rightGutter;
 
 
     @Override
     protected void onStart() {
         super.onStart();
         currentPlayerBoard = new Board();
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             currentPlayerBoard.getPot().setDegree(240);
         }
         rightGutter.setText(String.valueOf(currentPlayerBoard.getRightGutter().getHowManyBalls()));
@@ -63,11 +66,11 @@ public class TrainingActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Math.random() * 10 % 2 == 0) {
-            currentPlayer = "FIRSTPLAYER";
+        if ((Math.random() * 10) % 2 == 0) {
+            currentPlayer = FIRSTPLAYER;
             setContentView(R.layout.activity_training1);
         } else {
-            currentPlayer = "SECONDPLAYER";
+            currentPlayer = SECONDPLAYER;
             setContentView(R.layout.activity_training2);
         }
 

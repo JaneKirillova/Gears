@@ -3,8 +3,6 @@ package com.example.gears;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -20,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.gears.events.SuccessEventGetPicture;
 import com.example.gears.events.SuccessEventGetUser;
-import com.example.gears.events.SuccessEventLogin;
+import com.example.gears.events.SuccessEventUserAuth;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,15 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.change_password);
 
         loginButton.setOnClickListener(v -> loginUser());
-//        loginButton.setOnClickListener(v -> {
-//            SharedPrefManager.getInstance(getApplicationContext()).userLogin(new User("token", "username", "password", 0L));
-//            startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-//        });
-    }
-
-
-    public static Bitmap convertCompressedByteArrayToBitmap(byte[] src){
-        return BitmapFactory.decodeByteArray(src, 0, src.length);
     }
 
     private void loginUser() {
@@ -77,16 +66,14 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        eventBus.post(new SuccessEventLogin(response));
+                        eventBus.post(new SuccessEventUserAuth(response));
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String body;
-                        //get status code here
                         String statusCode = String.valueOf(error.networkResponse.statusCode);
-                        //get response body and parse with appropriate encoding
                         if(error.networkResponse.data!=null) {
                             try {
                                 body = new String(error.networkResponse.data,"UTF-8");
@@ -95,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        //do stuff with the body...
                     }
                 }) {
             @Override
@@ -194,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSuccessEventLogin(SuccessEventLogin event) {
+    public void onSuccessEventLogin(SuccessEventUserAuth event) {
         String response = event.getResponse();
         try {
             JSONObject obj = new JSONObject(response);
@@ -261,8 +247,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        this.finish();
         startActivity(new Intent(getApplicationContext(), NavigationActivity.class));
     }
-
-
 }

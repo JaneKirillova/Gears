@@ -635,9 +635,9 @@
     <EditText
         android:id="@+id/countdown"
         android:layout_width="118dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_x="245dp"
-        android:layout_y="12dp"
+        android:layout_y="7dp"
         android:gravity="center" />
 
     <ImageView

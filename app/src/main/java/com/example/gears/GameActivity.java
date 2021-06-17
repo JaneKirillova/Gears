@@ -50,24 +50,26 @@ import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
+    private static final String FIRSTPLAYER = "FIRSTPLAYER";
+
     private final ArrayList<GearImage> gears = new ArrayList<>();
-    ImageView ballInRightGutter, ballInLeftGutter;
-    ImageView sticker1, sticker2, sticker3, sticker4;
-    EventBus eventBus = EventBus.getDefault();
-    Button endTurn;
-    String currentPlayer;
-    String token;
+    private ImageView ballInRightGutter, ballInLeftGutter;
+    private ImageView sticker1, sticker2, sticker3, sticker4;
+    public EventBus eventBus = EventBus.getDefault();
+    private Button endTurn;
+    private String currentPlayer;
+    private String token;
     private GameState gameState;
     private Board currentPlayerBoard, otherPlayerBoard;
     private Gson gson = new Gson();
     private int activeGearNum = -2;
-    String gameId;
-    Boolean needToAddToTurn = true;
-    int numberOfDrownGears = 0;
-    EditText countDown;
-    CountDownTimer countDownTimer;
-    List<ImageView> stikers = new ArrayList<>();
-    List<StickerButton> stikerButtons = new ArrayList<>();
+    private String gameId;
+    private Boolean needToAddToTurn = true;
+    private int numberOfDrownGears = 0;
+    private EditText countDown;
+    private CountDownTimer countDownTimer;
+    private List<ImageView> stickers = new ArrayList<>();
+    private List<StickerButton> stickerButtons = new ArrayList<>();
     boolean gameIsEnded = false;
     private TextView leftGutter, rightGutter;
 
@@ -82,20 +84,20 @@ public class GameActivity extends AppCompatActivity {
 //                            eventBus.post(new SuccessEventGetMessage(obj));
                             gson = new Gson();
                             Message message = gson.fromJson(obj.toString(), Message.class);
-                            for(ImageView stiker: stikers) {
+                            for(ImageView stiker: stickers) {
                                 stiker.setVisibility(View.INVISIBLE);
                             }
                             if (message.getMessage() == Message.MessageType.FIRSTTYPE) {
-                                stikers.get(0).setVisibility(View.VISIBLE);
+                                stickers.get(0).setVisibility(View.VISIBLE);
                             }
                             if (message.getMessage() == Message.MessageType.SECONDTYPE) {
-                                stikers.get(1).setVisibility(View.VISIBLE);
+                                stickers.get(1).setVisibility(View.VISIBLE);
                             }
                             if (message.getMessage() == Message.MessageType.THIRDTYPE) {
-                                stikers.get(2).setVisibility(View.VISIBLE);
+                                stickers.get(2).setVisibility(View.VISIBLE);
                             }
                             if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
-                                stikers.get(3).setVisibility(View.VISIBLE);
+                                stickers.get(3).setVisibility(View.VISIBLE);
                             }
                             if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
                                 getMessage();
@@ -103,7 +105,6 @@ public class GameActivity extends AppCompatActivity {
                                 eventBus.post(new SuccessEventEndGame());
                             }
                         } catch (JSONException e) {
-                            System.out.print("ОШИБКА1: ");
                             e.printStackTrace();
                         }
                     }
@@ -111,9 +112,8 @@ public class GameActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-//                        eventBus.post(new ErrorEventGetMessage(error));
-                        for(ImageView stiker: stikers) {
-                            stiker.setVisibility(View.INVISIBLE);
+                        for(ImageView sticker: stickers) {
+                            sticker.setVisibility(View.INVISIBLE);
                         }
                         if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
                             getMessage();
@@ -125,7 +125,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/json");
+                params.put("Content-Type", "application/json");
                 params.put("token", token);
                 return params;
             }
@@ -208,7 +208,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/json");
+                params.put("Content-Type", "application/json");
                 params.put("token", token);
                 return params;
             }
@@ -222,7 +222,7 @@ public class GameActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onTick(long millisUntilFinished) {
-                countDown.setText((int) (millisUntilFinished / 1000) + "seconds");
+                countDown.setText((int) (millisUntilFinished / 1000) + " seconds");
             }
 
             @Override
@@ -241,8 +241,6 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         eventBus.post(new SuccessEventEndGame());
-//                        finish();
-//                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
                     }
                 },
                 new Response.ErrorListener() {
@@ -336,7 +334,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/json");
+                params.put("Content-Type", "application/json");
                 params.put("token", token);
                 return params;
             }
@@ -351,20 +349,20 @@ public class GameActivity extends AppCompatActivity {
             if (currentPlayerBoard.isAllBallsInPot() && otherPlayerBoard.isAllBallsInPot()) {
                 gameStateToSend.setCurrentGameState(GameState.CurrentGameState.DRAW);
             } else if (currentPlayerBoard.isAllBallsInPot()) {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     gameStateToSend.setCurrentGameState(GameState.CurrentGameState.FIRSTPLAYER);
                 } else {
                     gameStateToSend.setCurrentGameState(GameState.CurrentGameState.SECONDPLAYER);
                 }
             } else {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     gameStateToSend.setCurrentGameState(GameState.CurrentGameState.SECONDPLAYER);
                 } else {
                     gameStateToSend.setCurrentGameState(GameState.CurrentGameState.FIRSTPLAYER);
                 }
             }
         }
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.SECONDPLAYER);
         } else {
             gameStateToSend.setCurrentPlayer(GameState.CurrentPlayer.FIRSTPLAYER);
@@ -429,7 +427,7 @@ public class GameActivity extends AppCompatActivity {
         super.onStart();
         EventBus.getDefault().register(this);
         currentPlayerBoard = new Board();
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             currentPlayerBoard.getPot().setDegree(240);
         }
     }
@@ -468,20 +466,20 @@ public class GameActivity extends AppCompatActivity {
         }
         gson = new Gson();
         Message message = gson.fromJson(event.getResponse().toString(), Message.class);
-        for(ImageView stiker: stikers) {
+        for(ImageView stiker: stickers) {
             stiker.setVisibility(View.INVISIBLE);
         }
         if (message.getMessage() == Message.MessageType.FIRSTTYPE) {
-            stikers.get(0).setVisibility(View.VISIBLE);
+            stickers.get(0).setVisibility(View.VISIBLE);
         }
         if (message.getMessage() == Message.MessageType.SECONDTYPE) {
-            stikers.get(1).setVisibility(View.VISIBLE);
+            stickers.get(1).setVisibility(View.VISIBLE);
         }
         if (message.getMessage() == Message.MessageType.THIRDTYPE) {
-            stikers.get(2).setVisibility(View.VISIBLE);
+            stickers.get(2).setVisibility(View.VISIBLE);
         }
         if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
-            stikers.get(3).setVisibility(View.VISIBLE);
+            stickers.get(3).setVisibility(View.VISIBLE);
         }
         if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
             getMessage();
@@ -493,15 +491,17 @@ public class GameActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEventGetMessage(ErrorEventGetMessage event) {
         if (gameIsEnded) {
-            eventBus.post(new SuccessEventEndGame());
+            finish();
+            startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
         }
-        for(ImageView stiker: stikers) {
+        for(ImageView stiker: stickers) {
             stiker.setVisibility(View.INVISIBLE);
         }
         if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
             getMessage();
         } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
-            eventBus.post(new SuccessEventEndGame());
+            finish();
+            startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
         }
     }
 
@@ -524,7 +524,7 @@ public class GameActivity extends AppCompatActivity {
     public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
         rightGutter.setText(String.valueOf(currentPlayerBoard.getRightGutter().getHowManyBalls()));
         leftGutter.setText(String.valueOf(currentPlayerBoard.getLeftGutter().getHowManyBalls()));
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             getGame();
             getMessage();
         } else {
@@ -537,7 +537,7 @@ public class GameActivity extends AppCompatActivity {
     public void onSuccessEventGetGame(SuccessEventGetGame event) {
         gson = new Gson();
         gameState = gson.fromJson(event.getResponse().toString(), GameState.class);
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             currentPlayerBoard = gameState.getFirstPlayerBoard();
             otherPlayerBoard = new Board(gameState.getSecondPlayerBoard());
         } else {
@@ -564,13 +564,13 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     Toast.makeText(getApplicationContext(), "You won!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You won", Toast.LENGTH_SHORT).show();
@@ -595,13 +595,13 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     Toast.makeText(getApplicationContext(), "You won!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                if (currentPlayer.equals("FIRSTPLAYER")) {
+                if (currentPlayer.equals(FIRSTPLAYER)) {
                     Toast.makeText(getApplicationContext(), "You lose", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You won", Toast.LENGTH_SHORT).show();
@@ -627,15 +627,12 @@ public class GameActivity extends AppCompatActivity {
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
         token = SharedPrefManager.getInstance(this).getToken();
 
-        if (currentPlayer.equals("FIRSTPLAYER")) {
+        if (currentPlayer.equals(FIRSTPLAYER)) {
             setContentView(R.layout.activity_game_field1);
         } else {
             setContentView(R.layout.activity_game_field2);
         }
         gameId = SharedPrefManager.getInstance(this).getGameId();
-//        gameId = "7594281976693506295";
-//        currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
-//        currentPlayer = "FIRSTPLAYER";
 
         gears.add(new GearImage(1, 1));
         gears.add(new GearImage(3, 2));
@@ -678,9 +675,6 @@ public class GameActivity extends AppCompatActivity {
                     return;
                 }
                 countDownTimer.start();
-//                if (activeGearNum >= 0) {
-//                    gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
-//                }
                 activeGearNum = gears.get(finalI).gearNumber - 1;
                 gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
                 gameState.getTurn().setNumberOfActiveGear(activeGearNum);
@@ -704,14 +698,14 @@ public class GameActivity extends AppCompatActivity {
 
         makeTimer();
 
-        for (int i = 0; i < stikerButtons.size(); i++) {
+        for (int i = 0; i < stickerButtons.size(); i++) {
             final int finalI = i;
-            stikerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
+            stickerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     sendSticker(finalI);
-                    stikerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
+                    stickerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    stikerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
+                    stickerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
                 }
 
                 return true;
@@ -801,30 +795,30 @@ public class GameActivity extends AppCompatActivity {
 
         sticker1 = findViewById(R.id.stiker1);
         sticker1.setVisibility(View.INVISIBLE);
-        stikers.add(sticker1);
+        stickers.add(sticker1);
         sticker2 = findViewById(R.id.stiker2);
         sticker2.setVisibility(View.INVISIBLE);
-        stikers.add(sticker2);
+        stickers.add(sticker2);
         sticker3 = findViewById(R.id.stiker3);
         sticker3.setVisibility(View.INVISIBLE);
-        stikers.add(sticker3);
+        stickers.add(sticker3);
         sticker4 = findViewById(R.id.stiker4);
         sticker4.setVisibility(View.INVISIBLE);
-        stikers.add(sticker4);
+        stickers.add(sticker4);
 
         StickerButton stickerButton1 = new StickerButton();
         stickerButton1.button = findViewById(R.id.stiker_button1);
         stickerButton1.smallImage = findViewById(R.id.stiker1_small);
         stickerButton1.bigImage = findViewById(R.id.stiker1_big);
         stickerButton1.bigImage.setVisibility(View.INVISIBLE);
-        stikerButtons.add(stickerButton1);
+        stickerButtons.add(stickerButton1);
 
         StickerButton stickerButton2 = new StickerButton();
         stickerButton2.button = findViewById(R.id.stiker_button2);
         stickerButton2.smallImage = findViewById(R.id.stiker2_small);
         stickerButton2.bigImage = findViewById(R.id.stiker2_big);
         stickerButton2.bigImage.setVisibility(View.INVISIBLE);
-        stikerButtons.add(stickerButton2);
+        stickerButtons.add(stickerButton2);
 
 
         StickerButton stickerButton3 = new StickerButton();
@@ -832,7 +826,7 @@ public class GameActivity extends AppCompatActivity {
         stickerButton3.smallImage = findViewById(R.id.stiker3_small);
         stickerButton3.bigImage = findViewById(R.id.stiker3_big);
         stickerButton3.bigImage.setVisibility(View.INVISIBLE);
-        stikerButtons.add(stickerButton3);
+        stickerButtons.add(stickerButton3);
 
 
         StickerButton stickerButton4 = new StickerButton();
@@ -840,7 +834,7 @@ public class GameActivity extends AppCompatActivity {
         stickerButton4.smallImage = findViewById(R.id.stiker4_small);
         stickerButton4.bigImage = findViewById(R.id.stiker4_big);
         stickerButton4.bigImage.setVisibility(View.INVISIBLE);
-        stikerButtons.add(stickerButton4);
+        stickerButtons.add(stickerButton4);
 
         rightGutter = findViewById(R.id.right_gutter_text);
         leftGutter = findViewById(R.id.left_gutter_text);
@@ -899,9 +893,7 @@ public class GameActivity extends AppCompatActivity {
                         holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
                     }
                     if (numberOfDrownGears == 5) {
-//                        makeUniqueBoard();
-                        //HERE
-                        if (currentPlayer.equals("FIRSTPLAYER")) {
+                        if (currentPlayer.equals(FIRSTPLAYER)) {
                             makeUniqueBoard();
                         } else {
                             getBoard();
@@ -1113,7 +1105,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void redraw(int degree) {
-        // HERE
         if (needToAddToTurn) {
             gameState.getTurn().addDegreeToArrayDegree(-degree);
         }
@@ -1143,7 +1134,6 @@ public class GameActivity extends AppCompatActivity {
             ballInRightGutter.setVisibility(View.INVISIBLE);
         }
 
-        //HERE
         if (needToAddToTurn) {
             otherPlayerBoard.rebuild(-degree, activeGearNum);
         }
@@ -1157,8 +1147,6 @@ public class GameActivity extends AppCompatActivity {
             rotateDialer(gears.get(i), angle);
             gears.get(i).gear.setDegree(angle);
         }
-
-        //HERE
         initBoard();
     }
 

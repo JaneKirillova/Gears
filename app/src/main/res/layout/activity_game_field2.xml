@@ -632,41 +632,41 @@
     <EditText
         android:id="@+id/countdown"
         android:layout_width="118dp"
-        android:layout_height="40dp"
-        android:layout_x="96dp"
-        android:layout_y="15dp"
+        android:layout_height="wrap_content"
+        android:layout_x="97dp"
+        android:layout_y="12dp"
         android:gravity="center" />
 
     <ImageView
         android:id="@+id/stiker1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="325dp"
-        android:layout_y="63dp"
+        android:layout_width="59dp"
+        android:layout_height="62dp"
+        android:layout_x="296dp"
+        android:layout_y="71dp"
         app:srcCompat="@drawable/stiker1" />
 
     <ImageView
         android:id="@+id/stiker2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="325dp"
-        android:layout_y="63dp"
+        android:layout_width="59dp"
+        android:layout_height="62dp"
+        android:layout_x="296dp"
+        android:layout_y="71dp"
         app:srcCompat="@drawable/stiker2" />
 
     <ImageView
         android:id="@+id/stiker3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="325dp"
-        android:layout_y="63dp"
+        android:layout_width="59dp"
+        android:layout_height="62dp"
+        android:layout_x="296dp"
+        android:layout_y="71dp"
         app:srcCompat="@drawable/stiker3" />
 
     <ImageView
         android:id="@+id/stiker4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="325dp"
-        android:layout_y="63dp"
+        android:layout_width="59dp"
+        android:layout_height="62dp"
+        android:layout_x="296dp"
+        android:layout_y="71dp"
         app:srcCompat="@drawable/stiker4" />
 
     <ImageView
@@ -769,8 +769,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_x="311dp"
-        android:layout_y="25dp"
+        android:layout_x="280dp"
+        android:layout_y="38dp"
         android:gravity="center"
         android:text="Message from \n your opponent:" />
 

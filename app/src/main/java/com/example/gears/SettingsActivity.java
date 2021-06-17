@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480, false);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 640, 640, false);
 
                 profilePicture.setImageBitmap(scaledBitmap);
                 array = convertBitmapToByteArray(scaledBitmap);

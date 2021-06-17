@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FIndGameActivity extends AppCompatActivity {
+    private static final String FIRSTPLAYER = "FIRSTPLAYER";
+    private static final String SECONDPLAYER = "SECONDPLAYER";
+
     Button findOpponent;
     EventBus eventBus = EventBus.getDefault();
     User user;
@@ -60,21 +63,19 @@ public class FIndGameActivity extends AppCompatActivity {
             boolean isFirstPlayer = obj.getBoolean(gameId);
             String playerNum;
             if (isFirstPlayer) {
-                playerNum = "FIRSTPLAYER";
+                playerNum = FIRSTPLAYER;
             } else {
-                playerNum = "SECONDPLAYER";
+                playerNum = SECONDPLAYER;
             }
             SharedPrefManager.getInstance(getApplicationContext()).writeGame(gameId, playerNum);
             startActivity(new Intent(getApplicationContext(), GameActivity.class));
 
         } catch (JSONException e) {
-            System.out.print("ОШИБКА1: ");
             e.printStackTrace();
         }
     }
 
     private void findOpponent() {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!FIND OPPONENT!!!!!!!!!!!!!!!!!!!!!!!!!!1");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_FIND_OPPONENT,
                 new Response.Listener<String>() {
                     @Override
@@ -107,7 +108,7 @@ public class FIndGameActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-//                params.put("Content-Type", "application/json");
+                params.put("Content-Type", "application/json");
                 params.put("token", user.getToken());
                 return params;
             }
