@@ -74,6 +74,8 @@ public class RatingActivity extends AppCompatActivity {
                 JSONObject obj = userArray.getJSONObject(i);
                 users.get(i).username.setText(obj.getString("username"));
                 users.get(i).points.setText(obj.getString("points"));
+                users.get(i).gamesWon.setText(obj.getString("numberOfGamesWon"));
+                users.get(i).gamesLost.setText(obj.getString("numberOfGamesLost"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
