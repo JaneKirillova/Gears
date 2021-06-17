@@ -133,14 +133,11 @@ public class GameActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
-    private void sendStiker(int stikerNum) {
+    private void sendSticker(int stikerNum) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_SEND_MESSAGE + gameId + "/player/" + currentPlayer,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
-//                        finish();
-//                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-                    }
+                    public void onResponse(String response) { }
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -650,16 +647,16 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-//                if (activeGearNum != -1) {
-//                    return;
-//                }
+                if (activeGearNum != -1) {
+                    return;
+                }
                 countDownTimer.start();
                 if (activeGearNum >= 0) {
                     gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
                 }
                 activeGearNum = gears.get(finalI).gearNumber - 1;
                 gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
-//                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
+                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
             });
         }
         endTurn = findViewById(R.id.end_turn);
@@ -670,7 +667,7 @@ public class GameActivity extends AppCompatActivity {
                     return;
                 }
                 activeGearNum = -1;
-//                updateGame(gameState);
+                updateGame(gameState);
                 countDownTimer.cancel();
                 countDown.setText("done!");
             }
@@ -682,7 +679,7 @@ public class GameActivity extends AppCompatActivity {
             final int finalI = i;
             stikerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    sendStiker(finalI);
+                    sendSticker(finalI);
                     stikerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     stikerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
@@ -872,11 +869,11 @@ public class GameActivity extends AppCompatActivity {
                     if (numberOfDrownGears == 5) {
                         makeUniqueBoard();
                         //HERE
-//                        if (currentPlayer.equals("FIRSTPLAYER")) {
-//                            makeUniqueBoard();
-//                        } else {
-//                            getBoard();
-//                        }
+                        if (currentPlayer.equals("FIRSTPLAYER")) {
+                            makeUniqueBoard();
+                        } else {
+                            getBoard();
+                        }
                     }
                 }
             });
@@ -1085,9 +1082,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void redraw(int degree) {
         // HERE
-//        if (needToAddToTurn) {
-//            gameState.getTurn().addDegreeToArrayDegree(-degree);
-//        }
+        if (needToAddToTurn) {
+            gameState.getTurn().addDegreeToArrayDegree(-degree);
+        }
         currentPlayerBoard.rebuild(degree, activeGearNum);
 
         List<Integer> allGearsToRedraw = new ArrayList<>();
@@ -1113,9 +1110,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //HERE
-//        if (needToAddToTurn) {
-//            otherPlayerBoard.rebuild(-degree, activeGearNum);
-//        }
+        if (needToAddToTurn) {
+            otherPlayerBoard.rebuild(-degree, activeGearNum);
+        }
     }
 
     public void makeUniqueBoard() {
@@ -1128,7 +1125,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //HERE
-//        initBoard();
+        initBoard();
     }
 
 }
