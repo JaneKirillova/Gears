@@ -12,7 +12,7 @@ Remember that your every move can both help and hinder your opponent!
 
 ## Screenshots
 
-<img src="https://user-images.githubusercontent.com/57732278/122485337-49ef2c80-cfdf-11eb-96af-7f93c39beea8.jpg" width="18%"></img><img src="https://user-images.githubusercontent.com/57732278/122485327-45c30f00-cfdf-11eb-880e-2aa7cde169ae.jpg" width="18%"></img> <img src="https://user-images.githubusercontent.com/57732278/122485340-4bb8f000-cfdf-11eb-8f18-08300e895b41.jpg" width="18%"></img> 
+<img src="https://user-images.githubusercontent.com/57732278/122485337-49ef2c80-cfdf-11eb-96af-7f93c39beea8.jpg" width="18%"></img> <img src="https://user-images.githubusercontent.com/57732278/122485327-45c30f00-cfdf-11eb-880e-2aa7cde169ae.jpg" width="18%"></img> <img src="https://user-images.githubusercontent.com/57732278/122485340-4bb8f000-cfdf-11eb-8f18-08300e895b41.jpg" width="18%"></img> 
 
 
 
