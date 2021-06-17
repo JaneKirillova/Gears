@@ -14,6 +14,8 @@ public class URLs {
     public static final String URL_INIT_BOARD = ROOT_URL + "init/";
     public static final String URL_GET_BOARD = ROOT_URL + "board/";
     public static final String URL_LOAD_IMAGE = ROOT_URL + "picture";
+    public static final String URL_SEND_MESSAGE = ROOT_URL + "message/";
+    public static final String URL_GET_RATING = ROOT_URL + "rating";
     public  static final String URL_CHANGE_PASSWORD = ROOT_URL + "password/";
     public  static final String URL_CHANGE_USERNAME = ROOT_URL + "username/";
 

@@ -47,6 +47,8 @@ public class GameActivity extends AppCompatActivity {
 //    Dialog dialog = new Dialog(GameActivity.this);
     private final ArrayList<GearImage> gears = new ArrayList<>();
     ImageView ballInRightGutter, ballInLeftGutter;
+    ImageView stiker1, stiker2, stiker3, stiker4;
+    Button st1, st2, st3, st4;
     EventBus eventBus = EventBus.getDefault();
     Button endTurn;
     String currentPlayer;
@@ -60,7 +62,124 @@ public class GameActivity extends AppCompatActivity {
     int numberOfDrownGears = 0;
     EditText countDown;
     CountDownTimer countDownTimer;
+    List<ImageView> stikers = new ArrayList<>();
+    List<StickerButton> stikerButtons = new ArrayList<>();
 
+
+    private void getMessage() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_SEND_MESSAGE + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+//                            eventBus.post(new SuccessEventGetMessage(obj));
+                            gson = new Gson();
+                            Message message = gson.fromJson(obj.toString(), Message.class);
+                            for(ImageView stiker: stikers) {
+                                stiker.setVisibility(View.INVISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.FIRSTTYPE) {
+                                stikers.get(0).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.SECONDTYPE) {
+                                stikers.get(1).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.THIRDTYPE) {
+                                stikers.get(2).setVisibility(View.VISIBLE);
+                            }
+                            if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
+                                stikers.get(3).setVisibility(View.VISIBLE);
+                            }
+                            if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+                                getMessage();
+                            } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+                                eventBus.post(new SuccessEventEndGame());
+                            }
+                        } catch (JSONException e) {
+                            System.out.print("ОШИБКА1: ");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        eventBus.post(new ErrorEventGetMessage(error));
+                        for(ImageView stiker: stikers) {
+                            stiker.setVisibility(View.INVISIBLE);
+                        }
+                        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+                            getMessage();
+                        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+                            eventBus.post(new SuccessEventEndGame());
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/json");
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void sendStiker(int stikerNum) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_SEND_MESSAGE + gameId + "/player/" + currentPlayer,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+//                        finish();
+//                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        eventBus.post(new ErrorEvent(error));
+                    }
+                }) {
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                JSONObject toReturn = null;
+                try {
+                    if (stikerNum == 0) {
+                        toReturn = new JSONObject(gson.toJson(new Message(Message.MessageType.FIRSTTYPE)));
+                    }
+                    if (stikerNum == 1) {
+                        toReturn = new JSONObject(gson.toJson(new Message(Message.MessageType.SECONDTYPE)));
+                    }
+                    if (stikerNum == 2) {
+                        toReturn = new JSONObject(gson.toJson(new Message(Message.MessageType.THIRDTYPE)));
+                    }
+                    if (stikerNum == 3) {
+                        toReturn = new JSONObject(gson.toJson(new Message(Message.MessageType.FOURTHTYPE)));
+                    }
+                    if (toReturn != null) {
+                        return toReturn.toString().getBytes();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
 
     private void getBoard() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_BOARD
@@ -116,8 +235,9 @@ public class GameActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                        eventBus.post(new SuccessEventEndGame());
+//                        finish();
+//                        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
                     }
                 },
                 new Response.ErrorListener() {
@@ -309,6 +429,8 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -320,6 +442,50 @@ public class GameActivity extends AppCompatActivity {
     protected void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEventEndGame(SuccessEventEndGame event) {
+        finish();
+        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEventGetMessage(SuccessEventGetMessage event) {
+        gson = new Gson();
+        Message message = gson.fromJson(event.getResponse().toString(), Message.class);
+        for(ImageView stiker: stikers) {
+            stiker.setVisibility(View.INVISIBLE);
+        }
+        if (message.getMessage() == Message.MessageType.FIRSTTYPE) {
+            stikers.get(0).setVisibility(View.VISIBLE);
+        }
+        if (message.getMessage() == Message.MessageType.SECONDTYPE) {
+            stikers.get(1).setVisibility(View.VISIBLE);
+        }
+        if (message.getMessage() == Message.MessageType.THIRDTYPE) {
+            stikers.get(2).setVisibility(View.VISIBLE);
+        }
+        if (message.getMessage() == Message.MessageType.FOURTHTYPE) {
+            stikers.get(3).setVisibility(View.VISIBLE);
+        }
+        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+            getMessage();
+        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            eventBus.post(new SuccessEventEndGame());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onErrorEventGetMessage(ErrorEventGetMessage event) {
+        for(ImageView stiker: stikers) {
+            stiker.setVisibility(View.INVISIBLE);
+        }
+        if (gameState == null || gameState.getCurrentGameState() == GameState.CurrentGameState.CONTINUE) {
+            getMessage();
+        } else if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
+            eventBus.post(new SuccessEventEndGame());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -340,6 +506,7 @@ public class GameActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
         getGame();
+        getMessage();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -428,7 +595,7 @@ public class GameActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
-//        token = SharedPrefManager.getInstance(this).getToken();
+        token = SharedPrefManager.getInstance(this).getToken();
 
         if (currentPlayer.equals("FIRSTPLAYER")) {
             setContentView(R.layout.activity_game_field1);
@@ -477,9 +644,9 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-//                if (activeGearNum != -1) {
-//                    return;
-//                }
+                if (activeGearNum != -1) {
+                    return;
+                }
                 countDownTimer.start();
                 if (activeGearNum >= 0) {
                     gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
@@ -487,23 +654,38 @@ public class GameActivity extends AppCompatActivity {
                 activeGearNum = gears.get(finalI).gearNumber - 1;
                 gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
 //                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
+                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
             });
         }
         endTurn = findViewById(R.id.end_turn);
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                if (activeGearNum < 0) {
+                    return;
+                }
+                activeGearNum = -1;
+                updateGame(gameState);
                 countDownTimer.cancel();
                 countDown.setText("done!");
-//                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
-//                if (activeGearNum < 0) {
-//                    return;
-//                }
-//                activeGearNum = -1;
-//                updateGame(gameState);
             }
         });
         makeTimer();
+
+        for (int i = 0; i < stikerButtons.size(); i++) {
+            final int finalI = i;
+            stikerButtons.get(finalI).button.setOnTouchListener((v, event) -> {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sendStiker(finalI);
+                    stikerButtons.get(finalI).bigImage.setVisibility(View.VISIBLE);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    stikerButtons.get(finalI).bigImage.setVisibility(View.INVISIBLE);
+                }
+
+                return true;
+            });
+        }
     }
 
     private void initFirstPlayerScreen() {
@@ -585,6 +767,49 @@ public class GameActivity extends AppCompatActivity {
         gears.get(4).notChosenGear = findViewById(R.id.imageView_gear5_chosen);
 
         countDown = findViewById(R.id.countdown);
+
+        stiker1 = findViewById(R.id.stiker1);
+        stiker1.setVisibility(View.INVISIBLE);
+        stikers.add(stiker1);
+        stiker2 = findViewById(R.id.stiker2);
+        stiker2.setVisibility(View.INVISIBLE);
+        stikers.add(stiker2);
+        stiker3 = findViewById(R.id.stiker3);
+        stiker3.setVisibility(View.INVISIBLE);
+        stikers.add(stiker3);
+        stiker4 = findViewById(R.id.stiker4);
+        stiker4.setVisibility(View.INVISIBLE);
+        stikers.add(stiker4);
+
+        StickerButton stickerButton1 = new StickerButton();
+        stickerButton1.button = findViewById(R.id.stiker_button1);
+        stickerButton1.smallImage = findViewById(R.id.stiker1_small);
+        stickerButton1.bigImage = findViewById(R.id.stiker1_big);
+        stickerButton1.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton1);
+
+        StickerButton stickerButton2 = new StickerButton();
+        stickerButton2.button = findViewById(R.id.stiker_button2);
+        stickerButton2.smallImage = findViewById(R.id.stiker2_small);
+        stickerButton2.bigImage = findViewById(R.id.stiker2_big);
+        stickerButton2.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton2);
+
+
+        StickerButton stickerButton3 = new StickerButton();
+        stickerButton3.button = findViewById(R.id.stiker_button3);
+        stickerButton3.smallImage = findViewById(R.id.stiker3_small);
+        stickerButton3.bigImage = findViewById(R.id.stiker3_big);
+        stickerButton3.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton3);
+
+
+        StickerButton stickerButton4 = new StickerButton();
+        stickerButton4.button = findViewById(R.id.stiker_button4);
+        stickerButton4.smallImage = findViewById(R.id.stiker4_small);
+        stickerButton4.bigImage = findViewById(R.id.stiker4_big);
+        stickerButton4.bigImage.setVisibility(View.INVISIBLE);
+        stikerButtons.add(stickerButton4);
     }
 
 
@@ -641,6 +866,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                     if (numberOfDrownGears == 5) {
                         makeUniqueBoard();
+                        //HERE
 //                        if (currentPlayer.equals("FIRSTPLAYER")) {
 //                            makeUniqueBoard();
 //                        } else {
@@ -853,9 +1079,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void redraw(int degree) {
-//        if (needToAddToTurn) {
-//            gameState.getTurn().addDegreeToArrayDegree(-degree);
-//        }
+        if (needToAddToTurn) {
+            gameState.getTurn().addDegreeToArrayDegree(-degree);
+        }
         currentPlayerBoard.rebuild(degree, activeGearNum);
 
         List<Integer> allGearsToRedraw = new ArrayList<>();
@@ -880,20 +1106,23 @@ public class GameActivity extends AppCompatActivity {
             ballInRightGutter.setVisibility(View.INVISIBLE);
         }
 
-//        if (needToAddToTurn) {
-//            otherPlayerBoard.rebuild(-degree, activeGearNum);
-//        }
+        //HERE
+        if (needToAddToTurn) {
+            otherPlayerBoard.rebuild(-degree, activeGearNum);
+        }
     }
 
     public void makeUniqueBoard() {
         int angle;
-//        for (int i = 0; i < 5; i++) {
-//            angle = (int) (Math.random() * 360);
-//            angle = (angle / 10) * 10;
-//            rotateDialer(gears.get(i), angle);
-//            gears.get(i).gear.setDegree(angle);
-//        }
-//        initBoard();
+        for (int i = 0; i < 5; i++) {
+            angle = (int) (Math.random() * 360);
+            angle = (angle / 10) * 10;
+            rotateDialer(gears.get(i), angle);
+            gears.get(i).gear.setDegree(angle);
+        }
+
+        //HERE
+        initBoard();
     }
 
 }
