@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layout2"
+    android:gravity="center">
+
+
+    <ImageView
+        android:id="@+id/imageView_gear1_back"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_gravity="center"
+        android:layout_x="196dp"
+        android:layout_y="60dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hole_full" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_back"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        android:layout_x="58dp"
+        android:layout_y="139dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hole_full" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3_back"
+        android:layout_width="156dp"
+        android:layout_height="156dp"
+        android:layout_gravity="center"
+        android:layout_x="194dp"
+        android:layout_y="233dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hole_full" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_back"
+        android:layout_width="186dp"
+        android:layout_height="186dp"
+        android:layout_gravity="center"
+        android:layout_x="11dp"
+        android:layout_y="292dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hole_full" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_back"
+        android:layout_width="210dp"
+        android:layout_height="210dp"
+        android:layout_gravity="center"
+        android:layout_x="157dp"
+        android:layout_y="368dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hole_full" />
+
+
+    <ImageView
+        android:id="@+id/imageView_gear1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear1_chosen"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
+        android:id="@+id/imageView_gear1_hole1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+
+    <ImageView
+        android:id="@+id/imageView_gear2"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_chosen"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_hole1"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_ball1"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_hole2"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_ball2"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_hole3"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+
+    <ImageView
+        android:id="@+id/imageView_gear2_ball3"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="68dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear1_ball1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_x="206dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3_chosen"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3_hole1"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3_ball1"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear3_hole2"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+
+    <ImageView
+        android:id="@+id/imageView_gear3_ball2"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="204dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_chosen"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_hole1"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_ball1"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_hole2"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_ball2"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_hole3"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_ball3"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_hole4"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_ball4"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="21dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_chosen"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_hole1"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_ball1"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_hole2"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_ball2"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_hole3"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_ball3"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_hole4"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_ball4"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_hole5"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/hole" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_ball5"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="167dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="matrix"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_end"
+        android:layout_width="193dp"
+        android:layout_height="216dp"
+        android:layout_gravity="center"
+        android:layout_x="23dp"
+        android:layout_y="489dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="TODO"
+        android:src="@drawable/pot3" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="251dp"
+        android:layout_y="115dp"
+        android:background="#0000"
+        android:text="1" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="118dp"
+        android:layout_y="199dp"
+        android:background="#0000"
+        android:text="2" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="242dp"
+        android:layout_y="281dp"
+        android:background="#0000"
+        android:text="3" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="74dp"
+        android:layout_y="355dp"
+        android:background="#0000"
+        android:text="4" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="232dp"
+        android:layout_y="443dp"
+        android:background="#0000"
+        android:text="5" />
+
+    <ImageView
+        android:id="@+id/imageView_right_gutter"
+        android:layout_width="wrap_content"
+        android:layout_height="244dp"
+        android:layout_gravity="center"
+        android:layout_x="330dp"
+        android:layout_y="-120dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="TODO"
+
+        android:src="@drawable/right_gutter3" />
+
+    <ImageView
+        android:id="@+id/imageView_left_gutter"
+        android:layout_width="216dp"
+        android:layout_height="244dp"
+        android:layout_gravity="center"
+        android:layout_x="17dp"
+        android:layout_y="-130dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/left_gutter3" />
+
+    <ImageView
+        android:id="@+id/imageView_ball_left_gutter"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        android:layout_x="190dp"
+        android:layout_y="78dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/imageView_ball_right_gutter"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        android:layout_x="344dp"
+        android:layout_y="79dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ball" />
+
+    <TextView
+        android:id="@+id/right_gutter_text"
+        android:layout_width="37dp"
+        android:layout_height="36dp"
+        android:layout_x="371dp"
+        android:layout_y="109dp"
+        android:autoSizeTextType="uniform"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/left_gutter_text"
+        android:layout_width="34dp"
+        android:layout_height="36dp"
+        android:layout_x="154dp"
+        android:layout_y="98dp"
+        android:autoSizeTextType="uniform"
+        android:text="" />
+
+</AbsoluteLayout>
