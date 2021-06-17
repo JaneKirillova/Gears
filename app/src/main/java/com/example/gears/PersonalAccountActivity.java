@@ -44,7 +44,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class PersonalAccountActivity extends AppCompatActivity {
-    Button startGame, loadImage;
+    Button startGame, loadImage, tmpButton, tmpRating;
     EventBus eventBus = EventBus.getDefault();
     TextView userId, userLogin, userPassword;
     User user;

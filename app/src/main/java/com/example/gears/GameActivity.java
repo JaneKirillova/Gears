@@ -21,13 +21,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.gears.events.ErrorEvent;
+import com.example.gears.events.ErrorEventGetMessage;
+import com.example.gears.events.SuccessEventEndGame;
 import com.example.gears.events.SuccessEventGetBoard;
 import com.example.gears.events.SuccessEventGetGame;
+import com.example.gears.events.SuccessEventGetMessage;
 import com.example.gears.events.SuccessEventInitBoard;
 import com.example.gears.events.SuccessEventUpdateGame;
 import com.example.gears.gameObjects.Board;
 import com.example.gears.gameObjects.GameState;
 import com.example.gears.gameObjects.Gear;
+import com.example.gears.gameObjects.Message;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -591,6 +596,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -644,9 +650,9 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-                if (activeGearNum != -1) {
-                    return;
-                }
+//                if (activeGearNum != -1) {
+//                    return;
+//                }
                 countDownTimer.start();
                 if (activeGearNum >= 0) {
                     gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
@@ -654,23 +660,22 @@ public class GameActivity extends AppCompatActivity {
                 activeGearNum = gears.get(finalI).gearNumber - 1;
                 gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
 //                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
-                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
             });
         }
         endTurn = findViewById(R.id.end_turn);
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
                 if (activeGearNum < 0) {
                     return;
                 }
                 activeGearNum = -1;
-                updateGame(gameState);
+//                updateGame(gameState);
                 countDownTimer.cancel();
                 countDown.setText("done!");
             }
         });
+
         makeTimer();
 
         for (int i = 0; i < stikerButtons.size(); i++) {
@@ -1079,9 +1084,10 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void redraw(int degree) {
-        if (needToAddToTurn) {
-            gameState.getTurn().addDegreeToArrayDegree(-degree);
-        }
+        // HERE
+//        if (needToAddToTurn) {
+//            gameState.getTurn().addDegreeToArrayDegree(-degree);
+//        }
         currentPlayerBoard.rebuild(degree, activeGearNum);
 
         List<Integer> allGearsToRedraw = new ArrayList<>();
@@ -1107,9 +1113,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //HERE
-        if (needToAddToTurn) {
-            otherPlayerBoard.rebuild(-degree, activeGearNum);
-        }
+//        if (needToAddToTurn) {
+//            otherPlayerBoard.rebuild(-degree, activeGearNum);
+//        }
     }
 
     public void makeUniqueBoard() {
@@ -1122,7 +1128,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //HERE
-        initBoard();
+//        initBoard();
     }
 
 }
