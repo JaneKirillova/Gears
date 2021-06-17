@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".SettingsActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="152dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_x="171dp"
+        android:layout_y="38dp"
+        android:autoSizeTextType="uniform"
+        android:text="RATING"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/change_password" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
+        android:layout_x="68dp"
+        android:layout_y="20dp"
+        app:srcCompat="@drawable/rating" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_x="15dp"
+        android:layout_y="160dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="username" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_x="135dp"
+        android:layout_y="160dp"
+        android:gravity="center"
+        android:autoSizeTextType="uniform"
+        android:text="points" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_x="220dp"
+        android:layout_y="140dp"
+        android:gravity="center"
+        android:autoSizeTextType="uniform"
+        android:text="games\nwon" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_x="305dp"
+        android:layout_y="140dp"
+        android:gravity="center"
+        android:autoSizeTextType="uniform"
+        android:text="games\nlost" />
+
+    <TextView
+        android:id="@+id/username1"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="240dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user1" />
+
+    <TextView
+        android:id="@+id/points1"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="240dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won1"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="240dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost1"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="240dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username2"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="280dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user2" />
+
+    <TextView
+        android:id="@+id/points2"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="280dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won2"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="280dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost2"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="280dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username3"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="320dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user3" />
+
+    <TextView
+        android:id="@+id/points3"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="320dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won3"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="320dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost3"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="320dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username4"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="360dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user4" />
+
+    <TextView
+        android:id="@+id/points4"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="360dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won4"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="360dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost4"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="360dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username5"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="400dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user5" />
+
+    <TextView
+        android:id="@+id/points5"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="400dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won5"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="400dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost5"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="400dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+
+    <TextView
+        android:id="@+id/username6"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="440dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user6" />
+
+    <TextView
+        android:id="@+id/points6"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="440dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won6"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="440dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost6"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="440dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username7"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="480dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user7" />
+
+    <TextView
+        android:id="@+id/points7"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="480dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won7"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="480dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost7"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="480dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username8"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="520dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user8" />
+
+    <TextView
+        android:id="@+id/points8"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="520dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won8"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="520dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost8"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="520dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username9"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="560dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user9" />
+
+    <TextView
+        android:id="@+id/points9"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="560dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won9"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="560dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost9"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="560dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/username10"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_x="15dp"
+        android:layout_y="600dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="user10" />
+
+    <TextView
+        android:id="@+id/points10"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="135dp"
+        android:layout_y="600dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_won10"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="220dp"
+        android:layout_y="600dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/games_lost10"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_x="305dp"
+        android:layout_y="600dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <Button
+        android:id="@+id/update_rating"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_x="130dp"
+        android:layout_y="644dp"
+        android:text="Update rating" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_x="-1dp"
+        android:layout_y="220dp"
+        android:background="?android:attr/listDivider" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="1dp"
+        android:layout_height="475dp"
+        android:layout_x="125dp"
+        android:layout_y="155dp"
+        android:background="?android:attr/listDivider" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="1dp"
+        android:layout_height="475dp"
+        android:layout_x="213dp"
+        android:layout_y="155dp"
+        android:background="?android:attr/listDivider" />
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="1dp"
+        android:layout_height="475dp"
+        android:layout_x="297dp"
+        android:layout_y="155dp"
+        android:background="?android:attr/listDivider" />
+
+
+</AbsoluteLayout>

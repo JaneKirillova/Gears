@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 );
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                                 finish();
-                                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                                startActivity(new Intent(getApplicationContext(), NavigationActivity.class));
                         } catch (JSONException e) {
                             System.out.println();;
                             e.printStackTrace();

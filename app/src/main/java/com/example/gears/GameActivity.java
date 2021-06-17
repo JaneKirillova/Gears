@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,11 +50,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
-//    Dialog dialog = new Dialog(GameActivity.this);
     private final ArrayList<GearImage> gears = new ArrayList<>();
     ImageView ballInRightGutter, ballInLeftGutter;
-    ImageView stiker1, stiker2, stiker3, stiker4;
-    Button st1, st2, st3, st4;
+    ImageView sticker1, sticker2, sticker3, sticker4;
     EventBus eventBus = EventBus.getDefault();
     Button endTurn;
     String currentPlayer;
@@ -69,6 +68,8 @@ public class GameActivity extends AppCompatActivity {
     CountDownTimer countDownTimer;
     List<ImageView> stikers = new ArrayList<>();
     List<StickerButton> stikerButtons = new ArrayList<>();
+    boolean gameIsEnded = false;
+    private TextView leftGutter, rightGutter;
 
 
     private void getMessage() {
@@ -234,6 +235,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void endGame() {
+        gameIsEnded = true;
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, URLs.URL_END_GAME + gameId + "/player/" + currentPlayer,
                 new Response.Listener<String>() {
                     @Override
@@ -447,14 +449,23 @@ public class GameActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        endGame();
+        super.onBackPressed();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventEndGame(SuccessEventEndGame event) {
         finish();
-        startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+        startActivity(new Intent(getApplicationContext(), NavigationActivity.class));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventGetMessage(SuccessEventGetMessage event) {
+        if (gameIsEnded) {
+            eventBus.post(new SuccessEventEndGame());
+        }
         gson = new Gson();
         Message message = gson.fromJson(event.getResponse().toString(), Message.class);
         for(ImageView stiker: stikers) {
@@ -481,6 +492,9 @@ public class GameActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEventGetMessage(ErrorEventGetMessage event) {
+        if (gameIsEnded) {
+            eventBus.post(new SuccessEventEndGame());
+        }
         for(ImageView stiker: stikers) {
             stiker.setVisibility(View.INVISIBLE);
         }
@@ -508,8 +522,15 @@ public class GameActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEventInitBoard(SuccessEventInitBoard event) {
-        getGame();
-        getMessage();
+        rightGutter.setText(String.valueOf(currentPlayerBoard.getRightGutter().getHowManyBalls()));
+        leftGutter.setText(String.valueOf(currentPlayerBoard.getLeftGutter().getHowManyBalls()));
+        if (currentPlayer.equals("FIRSTPLAYER")) {
+            getGame();
+            getMessage();
+        } else {
+            getMessage();
+            getGame();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -539,6 +560,8 @@ public class GameActivity extends AppCompatActivity {
         if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.DRAW) {
                 Toast.makeText(getApplicationContext(), "Draw!", Toast.LENGTH_SHORT).show();
+                endGame();
+                return;
             }
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
                 if (currentPlayer.equals("FIRSTPLAYER")) {
@@ -568,6 +591,8 @@ public class GameActivity extends AppCompatActivity {
         if (gameState.getCurrentGameState() != GameState.CurrentGameState.CONTINUE) {
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.DRAW) {
                 Toast.makeText(getApplicationContext(), "Draw!", Toast.LENGTH_SHORT).show();
+                endGame();
+                return;
             }
             if (gameState.getCurrentGameState() == GameState.CurrentGameState.FIRSTPLAYER) {
                 if (currentPlayer.equals("FIRSTPLAYER")) {
@@ -644,14 +669,14 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        initFirstPlayerScreen();
+        initPlayerScreen();
 
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-//                if (activeGearNum != -1) {
-//                    return;
-//                }
+                if (activeGearNum != -1) {
+                    return;
+                }
                 countDownTimer.start();
 //                if (activeGearNum >= 0) {
 //                    gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
@@ -694,7 +719,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void initFirstPlayerScreen() {
+    private void initPlayerScreen() {
         gears.get(0).dialer = findViewById(R.id.imageView_gear1);
         gears.get(1).dialer = findViewById(R.id.imageView_gear2);
         gears.get(2).dialer = findViewById(R.id.imageView_gear3);
@@ -774,18 +799,18 @@ public class GameActivity extends AppCompatActivity {
 
         countDown = findViewById(R.id.countdown);
 
-        stiker1 = findViewById(R.id.stiker1);
-        stiker1.setVisibility(View.INVISIBLE);
-        stikers.add(stiker1);
-        stiker2 = findViewById(R.id.stiker2);
-        stiker2.setVisibility(View.INVISIBLE);
-        stikers.add(stiker2);
-        stiker3 = findViewById(R.id.stiker3);
-        stiker3.setVisibility(View.INVISIBLE);
-        stikers.add(stiker3);
-        stiker4 = findViewById(R.id.stiker4);
-        stiker4.setVisibility(View.INVISIBLE);
-        stikers.add(stiker4);
+        sticker1 = findViewById(R.id.stiker1);
+        sticker1.setVisibility(View.INVISIBLE);
+        stikers.add(sticker1);
+        sticker2 = findViewById(R.id.stiker2);
+        sticker2.setVisibility(View.INVISIBLE);
+        stikers.add(sticker2);
+        sticker3 = findViewById(R.id.stiker3);
+        sticker3.setVisibility(View.INVISIBLE);
+        stikers.add(sticker3);
+        sticker4 = findViewById(R.id.stiker4);
+        sticker4.setVisibility(View.INVISIBLE);
+        stikers.add(sticker4);
 
         StickerButton stickerButton1 = new StickerButton();
         stickerButton1.button = findViewById(R.id.stiker_button1);
@@ -816,6 +841,9 @@ public class GameActivity extends AppCompatActivity {
         stickerButton4.bigImage = findViewById(R.id.stiker4_big);
         stickerButton4.bigImage.setVisibility(View.INVISIBLE);
         stikerButtons.add(stickerButton4);
+
+        rightGutter = findViewById(R.id.right_gutter_text);
+        leftGutter = findViewById(R.id.left_gutter_text);
     }
 
 
@@ -972,7 +1000,7 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-    private class MyOnTouchListener implements View.OnTouchListener {
+    public class MyOnTouchListener implements View.OnTouchListener {
         private final int gearNum;
         private double startAngle;
         private final GearImage gearImage;
@@ -1105,6 +1133,8 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
+        rightGutter.setText(String.valueOf(currentPlayerBoard.getRightGutter().getHowManyBalls()));
+        leftGutter.setText(String.valueOf(currentPlayerBoard.getLeftGutter().getHowManyBalls()));
         if (currentPlayerBoard.getLeftGutter().getHowManyBalls() == 0) {
             ballInLeftGutter.setVisibility(View.INVISIBLE);
         }

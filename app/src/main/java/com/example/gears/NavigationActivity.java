@@ -6,12 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gears.databinding.ActivityMain2Binding;
 
-public class MainActivity2 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class NavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ImageView profileImage;
     TextView username;
     private AppBarConfiguration mAppBarConfiguration;
@@ -42,13 +39,6 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         binding = ActivityMain2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain2.toolbar);
-        binding.appBarMain2.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         drawer = findViewById(R.id.drawer_layout);
         navigationView = binding.navView;
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -88,10 +78,20 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 startActivity(new Intent(this, FIndGameActivity.class));
                 break;
             case R.id.nav_personal_account:
-                startActivity(new Intent(this, PersAccActivity.class));
+                startActivity(new Intent(this, PersonalAccountActivity.class));
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.nav_training:
+                startActivity(new Intent(this, TrainingActivity.class));
+                break;
+            case R.id.nav_rating:
+                startActivity(new Intent(this, RatingActivity.class));
+                break;
+            case R.id.nav_logout:
+                logout();
+                break;
 
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -99,11 +99,14 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main2);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void logout() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

@@ -92,7 +92,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), MainActivity2.class));
+        startActivity(new Intent(getApplicationContext(), NavigationActivity.class));
         super.onBackPressed();
     }
 

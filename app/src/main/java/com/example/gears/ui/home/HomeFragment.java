@@ -1,34 +1,14 @@
 package com.example.gears.ui.home;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.gears.R;
-import com.example.gears.User;
 import com.example.gears.databinding.FragmentHomeBinding;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.IOException;
-
-import static android.app.Activity.RESULT_OK;
-import static com.example.gears.PersonalAccountActivity.convertBitmapToByteArray;
 
 public class HomeFragment extends Fragment {
 //    Button startGame

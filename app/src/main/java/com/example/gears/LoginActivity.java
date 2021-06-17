@@ -261,7 +261,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        startActivity(new Intent(getApplicationContext(), MainActivity2.class));
+        startActivity(new Intent(getApplicationContext(), NavigationActivity.class));
     }
 
 

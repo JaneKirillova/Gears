@@ -35,9 +35,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-                SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "SECONDPLAYER");
-                startActivity(new Intent(MainActivity.this, GameActivity.class));
+//                SharedPrefManager.getInstance(getApplicationContext()).writeGame("123", "SECONDPLAYER");
+                startActivity(new Intent(MainActivity.this, TrainingActivity.class));
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
     }
 }
