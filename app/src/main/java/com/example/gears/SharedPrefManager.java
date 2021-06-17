@@ -11,10 +11,14 @@ public class SharedPrefManager {
     private static final String KEY_PASSWORD = "keypassword";
     private static final String KEY_ID = "keyid";
     private static final String KEY_POINTS = "keypoints";
+    private static final String KEY_ALL_GAMES = "keyallgames";
+    private static final String KEY_GAMES_WON = "keygameswon";
+    private static final String KEY_GAMES_LOST = "keygameslost";
     private static final String KEY_CURRENT_GAME_ID = "keycurrentgameid";
     private static final String KEY_CURRENT_GAME_PLAYER_NUM = "keycurrentplayerturnnum";
     private static final String KEY_PROFILE_PHOTO_DIRECTORY = "keyprofilephotodirectory";
     private static final String KEY_PICTURE_WAS_LOADED = "keypicturewasloaded";
+    private static final String KEY_WAS_PLAYED_GAME = "keywasplayedgame";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -33,6 +37,20 @@ public class SharedPrefManager {
     public String getToken() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
+    public void changePassword(String password) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_PASSWORD, password);
+        editor.apply();
+    }
+
+    public void changeUsername(String username) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_USERNAME, username);
+        editor.apply();
     }
 
     public void savePhotoDirectory(String path) {
@@ -59,6 +77,18 @@ public class SharedPrefManager {
         editor.apply();
     }
 
+    public boolean wasPlayedGame() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_WAS_PLAYED_GAME, false);
+    }
+
+    public void setWasPlayedGame(boolean wasPlayedGame) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_WAS_PLAYED_GAME, wasPlayedGame);
+        editor.apply();
+    }
+
     public void userLogin(User user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -67,6 +97,9 @@ public class SharedPrefManager {
         editor.putString(KEY_PASSWORD, user.getPassword());
         editor.putLong(KEY_ID, user.getId());
         editor.putInt(KEY_POINTS, user.getPoints());
+        editor.putInt(KEY_ALL_GAMES, user.getTotalNumberOfGames());
+        editor.putInt(KEY_GAMES_LOST, user.getGamesLost());
+        editor.putInt(KEY_GAMES_WON, user.getGamesWon());
         editor.apply();
     }
 
@@ -102,7 +135,10 @@ public class SharedPrefManager {
                 sharedPreferences.getString(KEY_USERNAME, null),
                 sharedPreferences.getString(KEY_PASSWORD, null),
                 sharedPreferences.getLong(KEY_ID, 0),
-                sharedPreferences.getInt(KEY_POINTS, 0)
+                sharedPreferences.getInt(KEY_POINTS, 0),
+                sharedPreferences.getInt(KEY_ALL_GAMES, 0),
+                sharedPreferences.getInt(KEY_GAMES_WON, 0),
+                sharedPreferences.getInt(KEY_GAMES_LOST, 0)
         );
     }
 }

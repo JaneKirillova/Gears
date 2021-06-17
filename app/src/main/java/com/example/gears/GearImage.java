@@ -2,6 +2,7 @@ package com.example.gears;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -49,9 +50,9 @@ public class GearImage {
     }
 
 
-    public Bitmap image;
+    public Bitmap chosenGearImage;
     public Matrix matrix;
-    public ImageView dialer;
+    public ImageView dialer, notChosenGear;
     public int dialerHeight, dialerWidth;
     public int radius;
     int holesNumber;

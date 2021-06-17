@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PersAccActivity">
+
+
+    <TextView
+        android:id="@+id/personal"
+        android:layout_width="210dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_x="195dp"
+        android:layout_y="47dp"
+        android:autoSizeTextType="uniform"
+        android:text="PERSONAL"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/account"
+        android:layout_width="209dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_x="193dp"
+        android:layout_y="111dp"
+        android:autoSizeTextType="uniform"
+        android:text="ACCOUNT"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <ImageView
+        android:id="@+id/profile"
+        android:layout_width="159dp"
+        android:layout_height="156dp"
+        android:layout_x="18dp"
+        android:layout_y="28dp"
+        app:srcCompat="@drawable/user_without_photo" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="124dp"
+        android:layout_height="44dp"
+        android:layout_x="20dp"
+        android:layout_y="250dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="USERNAME:" />
+
+    <TextView
+        android:id="@+id/points"
+        android:layout_width="123dp"
+        android:layout_height="44dp"
+        android:layout_x="18dp"
+        android:layout_y="325dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="POINTS:" />
+
+    <TextView
+        android:id="@+id/all_games"
+        android:layout_width="261dp"
+        android:layout_height="63dp"
+        android:layout_x="21dp"
+        android:layout_y="402dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="Played games number:" />
+
+    <TextView
+        android:id="@+id/games_won"
+        android:layout_width="243dp"
+        android:layout_height="63dp"
+        android:layout_x="29dp"
+        android:layout_y="501dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="Games won:" />
+
+    <TextView
+        android:id="@+id/games_lost"
+        android:layout_width="243dp"
+        android:layout_height="63dp"
+        android:layout_x="31dp"
+        android:layout_y="599dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="Games lost:" />
+
+    <TextView
+        android:id="@+id/space_for_username"
+        android:layout_width="222dp"
+        android:layout_height="44dp"
+        android:layout_x="169dp"
+        android:layout_y="250dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="username" />
+
+    <TextView
+        android:id="@+id/space_for_points"
+        android:layout_width="222dp"
+        android:layout_height="44dp"
+        android:layout_x="177dp"
+        android:layout_y="325dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="points" />
+
+    <TextView
+        android:id="@+id/space_for_all_games"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
+        android:layout_x="312dp"
+        android:layout_y="402dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/space_for_games_won"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
+        android:layout_x="312dp"
+        android:layout_y="501dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/space_for_games_lost"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
+        android:layout_x="312dp"
+        android:layout_y="599dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="0" />
+
+</AbsoluteLayout>

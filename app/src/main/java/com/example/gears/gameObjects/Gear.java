@@ -55,8 +55,8 @@ public class Gear {
         this.radius = radius;
     }
     public void setXY(int x, int y) {
-        this.x = x + radius / 2;
-        this.y = y + radius / 2;
+        this.x = x + radius;
+        this.y = y + radius;
     }
 
     private  float x;

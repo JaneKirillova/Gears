@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -56,6 +58,8 @@ public class GameActivity extends AppCompatActivity {
     String gameId;
     Boolean needToAddToTurn = true;
     int numberOfDrownGears = 0;
+    EditText countDown;
+    CountDownTimer countDownTimer;
 
 
     private void getBoard() {
@@ -89,6 +93,22 @@ public class GameActivity extends AppCompatActivity {
         };
 
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void makeTimer() {
+        countDownTimer = new CountDownTimer(50000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countDown.setText((int) (millisUntilFinished / 1000) + "seconds");
+            }
+
+            @Override
+            public void onFinish() {
+                countDown.setText("done!");
+                activeGearNum = -1;
+                updateGame(gameState);
+            }
+        };
     }
 
     private void endGame() {
@@ -289,8 +309,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -409,8 +427,6 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        currentPlayer = "SECONDPLAYER";
-//        currentPlayer = "FIRSTPLAYER";
         currentPlayer = SharedPrefManager.getInstance(this).getCurrentPlayerNum();
 //        token = SharedPrefManager.getInstance(this).getToken();
 
@@ -433,8 +449,8 @@ public class GameActivity extends AppCompatActivity {
 
 
         for (GearImage gearImage: gears) {
-            if (gearImage.image == null) {
-                gearImage.image = BitmapFactory.decodeResource(getResources(), R.drawable.gear);
+            if (gearImage.chosenGearImage == null) {
+                gearImage.chosenGearImage = BitmapFactory.decodeResource(getResources(), R.drawable.gear);
                 for (HoleImage holeIm : gearImage.holes) {
                     holeIm.image = BitmapFactory.decodeResource(getResources(), R.drawable.hole);
                     holeIm.ball.image = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
@@ -464,7 +480,12 @@ public class GameActivity extends AppCompatActivity {
 //                if (activeGearNum != -1) {
 //                    return;
 //                }
+                countDownTimer.start();
+                if (activeGearNum >= 0) {
+                    gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
+                }
                 activeGearNum = gears.get(finalI).gearNumber - 1;
+                gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
 //                gameState.getTurn().setNumberOfActiveGear(activeGearNum);
             });
         }
@@ -472,7 +493,9 @@ public class GameActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
+                countDownTimer.cancel();
+                countDown.setText("done!");
+//                startActivity(new Intent(getApplicationContext(), PersonalAccountActivity.class));
 //                if (activeGearNum < 0) {
 //                    return;
 //                }
@@ -480,20 +503,17 @@ public class GameActivity extends AppCompatActivity {
 //                updateGame(gameState);
             }
         });
+        makeTimer();
     }
 
     private void initFirstPlayerScreen() {
-        gears.get(0).dialer = (ImageView) findViewById(R.id.imageView_gear1);
-        gears.get(1).dialer = (ImageView) findViewById(R.id.imageView_gear2);
-        gears.get(2).dialer = (ImageView) findViewById(R.id.imageView_gear3);
-        gears.get(3).dialer = (ImageView) findViewById(R.id.imageView_gear4);
-        gears.get(4).dialer = (ImageView) findViewById(R.id.imageView_gear5);
-
+        gears.get(0).dialer = findViewById(R.id.imageView_gear1);
+        gears.get(1).dialer = findViewById(R.id.imageView_gear2);
+        gears.get(2).dialer = findViewById(R.id.imageView_gear3);
+        gears.get(3).dialer = findViewById(R.id.imageView_gear4);
+        gears.get(4).dialer = findViewById(R.id.imageView_gear5);
 
         gears.get(0).holes.get(0).dialer = findViewById(R.id.imageView_gear1_hole1);
-        gears.get(0).dialer.setVisibility(View.VISIBLE);
-
-
         gears.get(1).holes.get(0).dialer = findViewById(R.id.imageView_gear2_hole1);
         gears.get(1).holes.get(1).dialer = findViewById(R.id.imageView_gear2_hole2);
         gears.get(1).holes.get(2).dialer = findViewById(R.id.imageView_gear2_hole3);
@@ -558,6 +578,13 @@ public class GameActivity extends AppCompatActivity {
 
         ballInLeftGutter = findViewById(R.id.imageView_ball_left_gutter);
         ballInRightGutter = findViewById(R.id.imageView_ball_right_gutter);
+        gears.get(0).notChosenGear = findViewById(R.id.imageView_gear1_chosen);
+        gears.get(1).notChosenGear = findViewById(R.id.imageView_gear2_chosen);
+        gears.get(2).notChosenGear = findViewById(R.id.imageView_gear3_chosen);
+        gears.get(3).notChosenGear = findViewById(R.id.imageView_gear4_chosen);
+        gears.get(4).notChosenGear = findViewById(R.id.imageView_gear5_chosen);
+
+        countDown = findViewById(R.id.countdown);
     }
 
 
@@ -581,17 +608,17 @@ public class GameActivity extends AppCompatActivity {
 
 
                     Matrix resize = new Matrix();
-                    resize.postScale((float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getWidth(),
-                            (float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.image.getHeight());
+                    resize.postScale((float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.chosenGearImage.getWidth(),
+                            (float) Math.min(gear.dialerWidth, gear.dialerHeight) / (float) gear.chosenGearImage.getHeight());
 
-                    gear.image = Bitmap.createBitmap(gear.image, 0, 0, gear.image.getWidth(), gear.image.getHeight(), resize, false);
+                    gear.chosenGearImage = Bitmap.createBitmap(gear.chosenGearImage, 0, 0, gear.chosenGearImage.getWidth(), gear.chosenGearImage.getHeight(), resize, false);
 
                     for (HoleImage holeIm : gear.holes) {
                         holeIm.image = Bitmap.createScaledBitmap(holeIm.image, 150, 75, false);
                         holeIm.ball.image = Bitmap.createScaledBitmap(holeIm.ball.image, 75, 75, false);
                     }
 
-                    gear.dialer.setImageBitmap(gear.image);
+                    gear.dialer.setImageBitmap(gear.chosenGearImage);
                     gear.dialer.setImageMatrix(gear.matrix);
 
                     for (HoleImage holeIm : gear.holes) {
@@ -667,27 +694,27 @@ public class GameActivity extends AppCompatActivity {
     private Map.Entry<Double, Double> getDxDyForHoles(GearImage gear, HoleImage hole) {
         int degree = hole.degree;
         if (degree <= 90) {
-            Double dx = gear.radius + (gear.radius - 2) * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius - (gear.radius - 2) * Math.cos(Math.toRadians(degree));
+            Double dx = gear.radius + (gear.radius) * Math.sin(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius - (gear.radius) * Math.cos(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         if (degree <= 180) {
             degree -= 90;
-            Double dx = gear.radius + (gear.radius - 2) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-            Double dy = gear.radius + (gear.radius - 2) * Math.sin(Math.toRadians(degree));
+            Double dx = gear.radius + (gear.radius + 3) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius + 3) * Math.sin(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
         if (degree <= 270) {
             degree -= 180;
-            Double dx = gear.radius - (gear.radius - 2) * Math.sin(Math.toRadians(degree))- hole.image.getWidth() / 2;
-            Double dy = gear.radius + (gear.radius - 2) * Math.cos(Math.toRadians(degree));
+            Double dx = gear.radius - (gear.radius) * Math.sin(Math.toRadians(degree))- hole.image.getWidth() / 2;
+            Double dy = gear.radius + (gear.radius) * Math.cos(Math.toRadians(degree));
             return new AbstractMap.SimpleEntry<>(dx, dy);
         }
 
         degree -= 270;
-        Double dx = gear.radius - (gear.radius - 2) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
-        Double dy = gear.radius - (gear.radius - 2) * Math.sin(Math.toRadians(degree));
+        Double dx = gear.radius - (gear.radius) * Math.cos(Math.toRadians(degree)) - hole.image.getWidth() / 2;
+        Double dy = gear.radius - (gear.radius) * Math.sin(Math.toRadians(degree));
         return new AbstractMap.SimpleEntry<>(dx, dy);
     }
 
@@ -860,12 +887,12 @@ public class GameActivity extends AppCompatActivity {
 
     public void makeUniqueBoard() {
         int angle;
-        for (int i = 0; i < 5; i++) {
-            angle = (int) (Math.random() * 360);
-            angle = (angle / 10) * 10;
-            rotateDialer(gears.get(i), angle);
-            gears.get(i).gear.setDegree(angle);
-        }
+//        for (int i = 0; i < 5; i++) {
+//            angle = (int) (Math.random() * 360);
+//            angle = (angle / 10) * 10;
+//            rotateDialer(gears.get(i), angle);
+//            gears.get(i).gear.setDegree(angle);
+//        }
 //        initBoard();
     }
 

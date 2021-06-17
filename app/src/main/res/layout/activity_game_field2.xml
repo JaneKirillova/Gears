@@ -74,6 +74,17 @@
         android:src="@drawable/gear" />
 
     <ImageView
+        android:id="@+id/imageView_gear1_chosen"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_x="54dp"
+        android:layout_y="70dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
         android:id="@+id/imageView_gear1_hole1"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -95,6 +106,17 @@
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear2_chosen"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_x="182dp"
+        android:layout_y="149dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
 
     <ImageView
         android:id="@+id/imageView_gear2_hole1"
@@ -186,6 +208,17 @@
         android:src="@drawable/gear" />
 
     <ImageView
+        android:id="@+id/imageView_gear3_chosen"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:layout_gravity="center"
+        android:layout_x="70dp"
+        android:layout_y="243dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
+
+    <ImageView
         android:id="@+id/imageView_gear3_hole1"
         android:layout_width="136dp"
         android:layout_height="136dp"
@@ -240,6 +273,17 @@
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear4_chosen"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        android:layout_x="223dp"
+        android:layout_y="302dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
 
     <ImageView
         android:id="@+id/imageView_gear4_hole1"
@@ -339,6 +383,17 @@
         android:contentDescription="TODO"
         android:scaleType="matrix"
         android:src="@drawable/gear" />
+
+    <ImageView
+        android:id="@+id/imageView_gear5_chosen"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_gravity="center"
+        android:layout_x="53dp"
+        android:layout_y="378dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_2" />
 
     <ImageView
         android:id="@+id/imageView_gear5_hole1"
@@ -464,42 +519,51 @@
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_x="106dp"
-        android:layout_y="116dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="99dp"
+        android:layout_y="115dp"
+        android:background="#0000"
         android:text="1" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_x="240dp"
-        android:layout_y="207dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="232dp"
+        android:layout_y="199dp"
+        android:background="#0000"
         android:text="2" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_x="118dp"
-        android:layout_y="280dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="108dp"
+        android:layout_y="281dp"
+        android:background="#0000"
         android:text="3" />
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_x="287dp"
-        android:layout_y="368dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_x="276dp"
+        android:layout_y="355dp"
+        android:background="#0000"
         android:text="4" />
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_x="132dp"
-        android:layout_y="445dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_x="118dp"
+        android:layout_y="443dp"
+        android:background="#0000"
         android:text="5" />
 
     <Button
@@ -557,6 +621,22 @@
         android:contentDescription="TODO"
         android:scaleType="centerCrop"
         android:src="@drawable/ball" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_x="46dp"
+        android:layout_y="23dp"
+        android:text="Timer:" />
+
+    <EditText
+        android:id="@+id/countdown"
+        android:layout_width="118dp"
+        android:layout_height="40dp"
+        android:layout_x="96dp"
+        android:layout_y="15dp"
+        android:gravity="center" />
 
 
 </AbsoluteLayout>

@@ -29,10 +29,10 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        registerButton = findViewById(R.id.register);
+        registerButton = findViewById(R.id.change_password_button);
         login = findViewById(R.id.username);
-        password1 = findViewById(R.id.password);
-        password2 = findViewById(R.id.password2);
+        password1 = findViewById(R.id.change_password);
+        password2 = findViewById(R.id.change_username);
 
         registerButton.setOnClickListener(v -> registerUser());
     }

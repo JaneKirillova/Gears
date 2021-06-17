@@ -210,40 +210,40 @@ public class PersonalAccountActivity extends AppCompatActivity {
         final User oldUser = SharedPrefManager.getInstance(this).getUser();
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_USER + "/" + oldUser.getId(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            System.out.println("\n\n\n" + response + "\n\n\n");
-                            eventBus.post(new SuccessEventGetUser(obj));
-                        } catch (JSONException e) {
-                            System.out.print("ОШИБКА1: ");
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.print("ОШИБКА2: ");
-                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
-                        System.out.println(s);
-                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json");
-                params.put("token", oldUser.getToken());
-                return params;
-            }
-        };
-
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, URLs.URL_GET_USER + "/" + oldUser.getId(),
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject obj = new JSONObject(response);
+//                            System.out.println("\n\n\n" + response + "\n\n\n");
+//                            eventBus.post(new SuccessEventGetUser(obj));
+//                        } catch (JSONException e) {
+//                            System.out.print("ОШИБКА1: ");
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        System.out.print("ОШИБКА2: ");
+//                        String s = new String(error.networkResponse.data, Charset.defaultCharset());
+//                        System.out.println(s);
+//                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("Content-Type", "application/json");
+//                params.put("token", oldUser.getToken());
+//                return params;
+//            }
+//        };
+//
+//        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
 
 
 
@@ -279,13 +279,13 @@ public class PersonalAccountActivity extends AppCompatActivity {
             userLogin.setText(obj.getString("password"));
             userPassword.setText(obj.getString("username"));
 
-            User newUser = new User(
-                    oldUser.getToken(),
-                    obj.getString("username"),
-                    obj.getString("password"),
-                    obj.getLong("id"),
-                    obj.getInt("points"));
-            SharedPrefManager.getInstance(getApplicationContext()).userLogin(newUser);
+//            User newUser = new User(
+//                    oldUser.getToken(),
+//                    obj.getString("username"),
+//                    obj.getString("password"),
+//                    obj.getLong("id"),
+//                    obj.getInt("points"));
+//            SharedPrefManager.getInstance(getApplicationContext()).userLogin(newUser);
             setPicture();
         } catch (JSONException e) {
             e.printStackTrace();
