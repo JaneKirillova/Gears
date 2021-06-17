@@ -769,4 +769,13 @@
         android:layout_y="656dp"
         android:background="#0000" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="19dp"
+        android:layout_y="12dp"
+        android:gravity="center"
+        android:text="Message from \n your opponent:" />
+
 </AbsoluteLayout>

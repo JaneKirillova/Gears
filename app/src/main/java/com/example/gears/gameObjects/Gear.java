@@ -3,6 +3,9 @@ package com.example.gears.gameObjects;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.gears.gameObjects.DTOConstants.*;
+
+
 public class Gear {
     private int degree;
     private boolean isLast;
@@ -10,11 +13,12 @@ public class Gear {
     List<Hole> holes = new ArrayList<>();
     private int numberOfHoles;
 
+
     public Gear() {}
 
     public Gear(Gear other) {
         this.isLast = other.isLast;
-        this.isLast = other.isLast;
+        this.isFirst = other.isFirst;
         this.radius = other.radius;
         this.degree = other.degree;
         this.numberOfHoles = other.numberOfHoles;
@@ -28,17 +32,8 @@ public class Gear {
         }
         this.holes = newHoles;
 
-
-
     }
 
-    public void setIsLast(boolean bool) {
-        this.isLast = bool;
-    }
-
-    public void setIsFirst(boolean bool) {
-        this.isFirst = bool;
-    }
 
     public float getX() {
         return x;
@@ -48,12 +43,14 @@ public class Gear {
         return y;
     }
 
-    public float getRadius() {
+    public int getRadius() {
         return radius;
     }
-    public void setRadius(float radius) {
+
+    public void setRadius(int radius) {
         this.radius = radius;
     }
+
     public void setXY(int x, int y) {
         this.x = x + radius;
         this.y = y + radius;
@@ -61,7 +58,7 @@ public class Gear {
 
     private  float x;
     private  float y;
-    private float radius;
+    private int radius;
     public List<Integer> getDownNeighbours() {
         return downNeighbours;
     }
@@ -97,6 +94,7 @@ public class Gear {
         }
     }
 
+
     public int getNumberOfHoles() {
         return numberOfHoles;
     }
@@ -121,8 +119,16 @@ public class Gear {
         return isLast;
     }
 
+    public void setIsLast(boolean val) {
+        isLast = val;
+    }
+
     public boolean isFirst() {
         return isFirst;
+    }
+
+    public void setIsFirst(boolean val) {
+        isFirst = val;
     }
 
     public static class Hole {
@@ -132,6 +138,12 @@ public class Gear {
         private int numberOfBall;
         private int numberOfHole;
 
+        public Hole(int numberOfHole) {
+            capacity = HOLE_CAPACITY;
+            degree = 0;
+            this.numberOfHole = numberOfHole;
+        }
+
         public Hole() { }
         public Hole(Hole other) {
             this.capacity = other.capacity;
@@ -139,12 +151,6 @@ public class Gear {
             this.isFree = other.isFree;
             this.numberOfBall = other.numberOfBall;
             this.numberOfHole = other.numberOfHole;
-        }
-
-        public Hole(int numberOfHole) {
-            capacity = 1;
-            degree = 0;
-            this.numberOfHole = numberOfHole;
         }
 
         public int getCapacity() {

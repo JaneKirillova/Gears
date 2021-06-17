@@ -3,22 +3,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import static com.example.gears.gameObjects.DTOConstants.*;
 
 public class Board {
     private List<Gear> gears;
-    private Gutter rightGutter = new Gutter(60);
-    private Gutter leftGutter = new Gutter(300);
+    private Gutter rightGutter = new Gutter(RIGHT_GUTTER_START_DEGREE);
+    private Gutter leftGutter = new Gutter(LEFT_GUTTER_START_DEGREE);
     private Pot pot = new Pot();
-    final private int step = 10;
+    private final int step = STEP_DEGREE;
 
-    public Board() {};
+    public Board() {
+    }
+
     public Board(Board other) {
         this.gears = other.gears;
         this.rightGutter = new Gutter(other.rightGutter);
         this.leftGutter = new Gutter(other.leftGutter);
         this.pot = new Pot(other.pot);
         List<Gear> newGears = new ArrayList<>();
-        for (Gear gear: other.gears) {
+        for (Gear gear : other.gears) {
             newGears.add(new Gear(gear));
         }
         this.gears = newGears;
@@ -66,10 +69,6 @@ public class Board {
                 changingGear.setDegree(360 - step);
             }
 
-            if (changingGear.getDegree() == 60) {
-                System.out.println("aaaaa");
-            }
-
             extractBallsFromLastGear(activeGear, changingGear);
             putBallsInFirstGear(activeGear, changingGear);
 
@@ -89,7 +88,7 @@ public class Board {
         if (changingGear.isFirst()) {
             for (Gear.Hole holeOfChangingGear : changingGear.getHoles()) {
                 if (holeOfChangingGear.isFree() && (isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree()) ||
-                    isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree()))) {
+                        isEqualDegrees(holeOfChangingGear.getDegree(), this.getRightGutter().getDegree()))) {
 
                     if (this.getLeftGutter().getHowManyBalls() > 0 && isEqualDegrees(holeOfChangingGear.getDegree(), this.getLeftGutter().getDegree())) {
                         this.getLeftGutter().setHowManyBalls(getLeftGutter().getHowManyBalls() - holeOfChangingGear.getCapacity());
@@ -109,7 +108,7 @@ public class Board {
         if (changingGear.isLast()) {
             for (Gear.Hole holeOfChangingGear : changingGear.getHoles()) {
                 if (!holeOfChangingGear.isFree() && isEqualDegrees(holeOfChangingGear.getDegree(), this.getPot().getDegree()) &&
-                !holeOfChangingGear.isFree()) {
+                        !holeOfChangingGear.isFree()) {
                     this.getPot().setHowManyBalls(getPot().getHowManyBalls() + holeOfChangingGear.getCapacity());
                     holeOfChangingGear.setFree(true);
                 }
@@ -124,13 +123,10 @@ public class Board {
         double deg = 90 - upperHole.getDegree();
         double x = sumRadius * Math.cos(Math.toRadians(deg));
         double y = sumRadius * Math.sin(Math.toRadians(deg));
-        double mistake = sumRadius * 0.2;
+        double mistake = sumRadius * DIST_MISTAKE_COEF;
         x += upperGear.getX();
         y = upperGear.getY() - y;
         double dist = Math.sqrt(Math.pow((x - downGear.getX()), 2) + Math.pow((y - downGear.getY()), 2));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! x: " +
-                x + " y: " + y + " DOWNGEAR_X: " +  downGear.getX() + " DOWNGEAR_Y: " + downGear.getY() + " dist: " + dist + " mistake " + mistake
-                + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return dist <= mistake;
     }
 
@@ -150,12 +146,13 @@ public class Board {
     }
 
     private boolean isEqualDegrees(int first, int second) {
-        return Math.abs(first - second) <= 9;
+        return Math.abs(first - second) <= DEGREE_MISTAKE;
     }
 
     private boolean checkDegreeEquals(Gear.Hole upperGearHole, Gear.Hole downGearHole, double xUpperGear, double xDownGear) {
         if (upperGearHole.getDegree() == 180) {
-            return downGearHole.getDegree() > 350 || downGearHole.getDegree() < 10;
+            return downGearHole.getDegree() > NEAR_ZERO_FROM_FOURTH_QUATER_MISTAKE_DEGREE
+                    || downGearHole.getDegree() < NEAR_ZERO_FROM_FIRST_QUATER_MISTAKE_DEGREE;
         }
         if (xUpperGear - xDownGear < 0) {
             return upperGearHole.getDegree() < 180 && downGearHole.getDegree() > 180 &&
@@ -175,7 +172,8 @@ public class Board {
     }
 
     public class Gutter {
-        public Gutter() { }
+        public Gutter() {
+        }
 
         public Gutter(Gutter other) {
             this.degree = other.degree;
@@ -183,9 +181,9 @@ public class Board {
             this.howManyBallsStart = other.howManyBallsStart;
         }
 
-        private int degree = 60;
-        private int howManyBalls = 1;
-        private int howManyBallsStart = 1;
+        private int degree;
+        private int howManyBalls = BALLS_START_IN_GUTTER;
+        private int howManyBallsStart = BALLS_START_IN_GUTTER;
 
         public Gutter(int degree) {
             this.degree = degree;
@@ -213,14 +211,15 @@ public class Board {
     }
 
     public class Pot {
-        public Pot() { }
+        public Pot() {
+        }
 
         public Pot(Pot other) {
             this.degree = other.degree;
             this.howManyBalls = other.howManyBalls;
         }
 
-        private int degree = 120;
+        private int degree = POT_START_DEGREE;
         private int howManyBalls = 0;
 
         public int getDegree() {
@@ -240,20 +239,5 @@ public class Board {
         }
     }
 
-    public static void main(String[] args) {
-        Gear leftGear = new Gear(1, false, false, Collections.singletonList(1), Collections.emptyList());
-        Gear rightGear = new Gear(1, false, false,  Collections.emptyList(), Collections.singletonList(0));
-        leftGear.getHoles().get(0).setFree(true);
-        rightGear.getHoles().get(0).setFree(false);
-        Board b = new Board();
-        b.setGears(Arrays.asList(leftGear, rightGear));
-        b.rebuild(90, 0);
-        b.rebuild(-90, 1);
-        if (!b.getGears().get(1).getHoles().get(0).isFree()) {
-            System.out.println("URA");
-        } else {
-            System.out.println("PIZDA");
-        }
 
-    }
 }

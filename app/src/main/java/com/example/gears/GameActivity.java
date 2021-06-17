@@ -218,6 +218,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void makeTimer() {
         countDownTimer = new CountDownTimer(50000, 1000) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTick(long millisUntilFinished) {
                 countDown.setText((int) (millisUntilFinished / 1000) + "seconds");
@@ -558,7 +559,8 @@ public class GameActivity extends AppCompatActivity {
         needToAddToTurn = true;
         activeGearNum = -1;
         gameState.setTurn(gameState.new Turn());
-        Toast.makeText(getApplicationContext(), "Now it's your turn", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Now it's your turn, you have 50 seconds", Toast.LENGTH_SHORT).show();
+        countDownTimer.start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -647,13 +649,13 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gears.size(); i++) {
             int finalI = i;
             gears.get(i).selectingButton.setOnClickListener(v -> {
-                if (activeGearNum != -1) {
-                    return;
-                }
+//                if (activeGearNum != -1) {
+//                    return;
+//                }
                 countDownTimer.start();
-                if (activeGearNum >= 0) {
-                    gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
-                }
+//                if (activeGearNum >= 0) {
+//                    gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
+//                }
                 activeGearNum = gears.get(finalI).gearNumber - 1;
                 gears.get(activeGearNum).notChosenGear.setVisibility(View.INVISIBLE);
                 gameState.getTurn().setNumberOfActiveGear(activeGearNum);
@@ -661,11 +663,13 @@ public class GameActivity extends AppCompatActivity {
         }
         endTurn = findViewById(R.id.end_turn);
         endTurn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 if (activeGearNum < 0) {
                     return;
                 }
+                gears.get(activeGearNum).notChosenGear.setVisibility(View.VISIBLE);
                 activeGearNum = -1;
                 updateGame(gameState);
                 countDownTimer.cancel();
@@ -867,7 +871,7 @@ public class GameActivity extends AppCompatActivity {
                         holeIm.ball.dialer.setImageMatrix(holeIm.ball.matrix);
                     }
                     if (numberOfDrownGears == 5) {
-                        makeUniqueBoard();
+//                        makeUniqueBoard();
                         //HERE
                         if (currentPlayer.equals("FIRSTPLAYER")) {
                             makeUniqueBoard();
@@ -953,7 +957,7 @@ public class GameActivity extends AppCompatActivity {
         for (GearImage gearImage: gears) {
             Gear newGear = new Gear(gearImage.getHolesNumber(), gearNum == 5, gearNum == 1,
                     GearImage.getDownNeighborsList(gearNum), GearImage.getUpperNeighborsList(gearNum));
-            newGear.setRadius((float) gearImage.dialer.getLayoutParams().height / 2);
+            newGear.setRadius(gearImage.dialer.getLayoutParams().height / 2);
             gearsToAddToBoard.add(newGear);
             gearImage.setGear(newGear);
             gearImage.setNeighbours(newGear.getUpperNeighbours(), newGear.getDownNeighbours());
